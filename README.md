@@ -113,6 +113,15 @@ Shape (or Mesh2D)
 // like a 'Circle', 'AABBRect', or 'Polygon'
 ```
 
+## Design Detail
+
+Every implementation of 'Shape' should also implement a visitor pattern interface where the collision detection and manifold generation is defined. For this, we need 'shapes' to have access to fields in 'Body' like mass and velocity.
+
+While using the above pattern, we might come across a problem where we need to implement the same exact function twice ( visitor for 'Polygon' in class 'Circle', and vice versa ).
+
+In this case we can just define some static functions with two shape implementations as parameter and let the visitor in both classes delegate the actual code to the static function.
+
+
 # Reference
 
 [Randy Gaul's Tutorial](https://gamedevelopment.tutsplus.com/series/how-to-create-a-custom-physics-engine--gamedev-12715)
