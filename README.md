@@ -16,9 +16,9 @@ step()
     }
     (end)
 
-    for every rigidbody 'A'
+    for every rigidbody 'A' from index [0, n)
     {
-        for every "other" rigidbody 'B'
+        for every "other" rigidbody 'B' from index [i+1, n)
         {
             Manifold 'M'
             if ( 'A' collides with 'B' )
