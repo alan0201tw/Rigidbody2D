@@ -121,6 +121,10 @@ While using the above pattern, we might come across a problem where we need to i
 
 In this case we can just define some static functions with two shape implementations as parameter and let the visitor in both classes delegate the actual code to the static function.
 
+## Additional
+
+Maybe add some distance constraint, or spring joint, fixed joint?
+
 
 # Reference
 
