@@ -2,6 +2,8 @@
 
 #include "manifold.hpp"
 
+#include "GL/freeglut.h"
+
 Manifold AABB::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
     return visitor->visitAABB(shared_from_this());
@@ -21,4 +23,16 @@ Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
 {
     // TODO
     return Manifold(false);
+}
+
+void AABB::Render()
+{
+    glBegin(GL_QUADS);
+    {
+        glVertex2f(m_min[0], m_min[1]);
+        glVertex2f(m_min[0], m_max[1]);
+        glVertex2f(m_max[0], m_max[1]);
+        glVertex2f(m_max[0], m_min[1]);
+    }
+    glEnd();
 }

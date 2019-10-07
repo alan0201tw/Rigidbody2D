@@ -20,7 +20,10 @@ private:
     mutable std::vector<Manifold> m_manifolds;
 
 public:
+    Scene(float _dt) : m_deltaTime(_dt) {}
+
     void Step() const;
     void Render() const;
-    void AddRigidBody(std::shared_ptr<RigidBody2D> _body, float2 _position);
+    // for a given shape, create a rigidbody and return it for further operation
+    std::shared_ptr<RigidBody2D> AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position);
 };

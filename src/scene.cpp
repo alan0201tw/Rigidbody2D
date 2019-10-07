@@ -2,6 +2,7 @@
 
 #include "manifold.hpp"
 #include "shape.hpp"
+#include "integrator.hpp"
 
 void Scene::Step() const
 {
@@ -22,18 +23,25 @@ void Scene::Step() const
     }
 
     // integrate
-    for(size_t i = 0; i < m_bodies.size(); i++)
-    {
-        // m_bodies[i]
-    }
+    static ExplicitEulerIntegrator integrator;
+    integrator.Integrate(m_bodies, m_deltaTime);
 }
 
 void Scene::Render() const
 {
-
+    for(size_t i = 0; i < m_bodies.size(); i++)
+    {
+        m_bodies[i]->GetShape()->Render();
+    }
 }
 
-void Scene::AddRigidBody(std::shared_ptr<RigidBody2D> _body, float2 _position)
+std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position)
 {
+    std::shared_ptr<RigidBody2D> body = 
+        std::make_shared<RigidBody2D>(_shape, _position, 0.1f, 1.0f);
 
+    _shape->m_body = body;
+
+    m_bodies.push_back(body);
+    return body;
 }

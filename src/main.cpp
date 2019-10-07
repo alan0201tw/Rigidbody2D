@@ -5,7 +5,17 @@
 
 #include <GL/freeglut.h>
 
+#include "linalg.h"
+
 #include "clock.hpp"
+#include "scene.hpp"
+#include "circle.hpp"
+#include "aabb.hpp"
+
+namespace
+{
+    Scene scene(1.0f / 60.0f);
+}
 
 class GLUTCallback
 {
@@ -24,13 +34,15 @@ private:
 		0, 0, -1,
 		0, 1, 0);
 
-        glPushMatrix();
-        {
-            glTranslated(0, 0, -500);
+        // glPushMatrix();
+        // {
+        //     glTranslated(0, 0, 0);
 
-            glutWireTeapot(120.0);
-        }
-        glPopMatrix();
+        //     glutWireTeapot(10.0);
+        // }
+        // glPopMatrix();
+
+        scene.Render();
 
         glutSwapBuffers();
         glutPostRedisplay();
@@ -49,6 +61,8 @@ public:
         while(accumulator >= deltaTime)
         {
             // step();
+            std::cout << "step" << std::endl;
+            scene.Step();
 
             accumulator -= deltaTime;
         }
@@ -88,8 +102,20 @@ int main(int argc, char* argv[])
     glLoadIdentity();
     // gluOrtho2D sets up a two-dimensional orthographic viewing region.
     // This is equivalent to calling glOrtho with near = -1 and far = 1 .
-    // gluOrtho2D(-300, 300, -300, 300);
-    glOrtho(-300, 300, -300, 300, 0.01, 1000.0);
+    gluOrtho2D(-30, 30, -30, 30);
+    //glOrtho(-300, 300, -300, 300, 0.01, 1000.0);
+
+
+    // fill in the scene
+    typedef linalg::aliases::float2 float2;
+    std::shared_ptr<Circle> shape = std::make_shared<Circle>(1.0f);
+    scene.AddRigidBody(shape, float2(0, 0));
+    std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(1.0f);
+    scene.AddRigidBody(shape1, float2(1, 0));
+    std::shared_ptr<Circle> shape2 = std::make_shared<Circle>(1.0f);
+    scene.AddRigidBody(shape2, float2(0, 1));
+    std::shared_ptr<Circle> shape3 = std::make_shared<Circle>(1.0f);
+    scene.AddRigidBody(shape3, float2(2, -3));
 
     glutMainLoop();
 
