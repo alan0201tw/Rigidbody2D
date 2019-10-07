@@ -2,7 +2,7 @@
 
 #include "manifold.hpp"
 
-Manifold AABB::accept(Shape::Visitor<Manifold>* visitor)
+Manifold AABB::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
     return visitor->visitAABB(shared_from_this());
 }
