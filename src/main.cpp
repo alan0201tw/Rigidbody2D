@@ -108,12 +108,29 @@ int main(int argc, char* argv[])
 
     // fill in the scene
     typedef linalg::aliases::float2 float2;
-    std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-    auto body = scene.AddRigidBody(shape, float2(0, 0));
-    body->m_velocity = float2(5, 5);
-    std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
-    scene.AddRigidBody(shape1, float2(5, 5));
-
+    {
+        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+        auto body = scene.AddRigidBody(shape, float2(0, 0));
+        body->m_velocity = float2(5, 5);
+    }
+    {
+        std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
+        scene.AddRigidBody(shape1, float2(5, 5));
+    }
+    {
+        std::shared_ptr<AABB> shape2 = std::make_shared<AABB>(
+            float2 (5, 5)
+        );
+        auto body1 = scene.AddRigidBody(shape2, float2(-8, 0));
+        body1->m_velocity = float2(8, 5);
+    }
+    {
+        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
+            float2 (5, 5)
+        );
+        scene.AddRigidBody(shape3, float2(5, 5));
+    }
+    
     glutMainLoop();
 
     return 0;

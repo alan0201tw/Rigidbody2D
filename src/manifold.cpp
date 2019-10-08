@@ -17,12 +17,6 @@ void Manifold::Resolve() const
     if(m_isHit == false)
         return;
 
-    // std::cout << "m_body0->m_velocity = " << m_body0->m_velocity[0] << 
-    //     " , " << m_body0->m_velocity[1] << std::endl;
-   
-    // std::cout << "m_body1->m_velocity = " << m_body1->m_velocity[0] << 
-    //     " , " << m_body1->m_velocity[1] << std::endl;
-
     float2 rv = m_body1->m_velocity - m_body0->m_velocity;
 
     float velAlongNormal = linalg::dot(rv, m_normal);

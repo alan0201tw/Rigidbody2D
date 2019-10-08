@@ -8,10 +8,10 @@ class AABB : public Shape, public std::enable_shared_from_this<AABB>
 {
     typedef linalg::aliases::float2 float2;
 private:
-    float2 m_min, m_max;
+    float2 m_extent;
 
 public:
-    AABB(float2 _min, float2 _max) : m_min(_min), m_max(_max) {}
+    AABB(float2 _extent) : m_extent(_extent) {}
 
     virtual Manifold accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor) override;
 
