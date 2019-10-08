@@ -1,2 +1,12 @@
 bin/
 main
+*.exe
+vendor/bin/premake/
+
+# visual studio files
+bin-int/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/

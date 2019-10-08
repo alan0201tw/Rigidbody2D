@@ -14,7 +14,7 @@ private:
     typedef std::shared_ptr<RigidBody2D> BodyRef;
 
     float m_deltaTime;
-    uint m_iterations;
+    uint32_t m_iterations;
     std::vector<BodyRef> m_bodies;
     // this field should be updated by Step()
     mutable std::vector<Manifold> m_manifolds;

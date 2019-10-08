@@ -51,7 +51,7 @@ private:
 public:
     static void MainLoop()
     {
-        accumulator += Clock::Elapsed();
+        accumulator += (float)Clock::Elapsed();
         Clock::Reset();
 
         // std::cout << "accumulator = " << accumulator << std::endl;
