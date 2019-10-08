@@ -61,7 +61,7 @@ public:
         while(accumulator >= deltaTime)
         {
             // step();
-            std::cout << "step" << std::endl;
+            // std::cout << "step" << std::endl;
             scene.Step();
 
             accumulator -= deltaTime;
@@ -108,14 +108,11 @@ int main(int argc, char* argv[])
 
     // fill in the scene
     typedef linalg::aliases::float2 float2;
-    std::shared_ptr<Circle> shape = std::make_shared<Circle>(1.0f);
-    scene.AddRigidBody(shape, float2(0, 0));
-    std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(1.0f);
-    scene.AddRigidBody(shape1, float2(1, 0));
-    std::shared_ptr<Circle> shape2 = std::make_shared<Circle>(1.0f);
-    scene.AddRigidBody(shape2, float2(0, 1));
-    std::shared_ptr<Circle> shape3 = std::make_shared<Circle>(1.0f);
-    scene.AddRigidBody(shape3, float2(2, -3));
+    std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+    auto body = scene.AddRigidBody(shape, float2(0, 0));
+    body->m_velocity = float2(5, 5);
+    std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
+    scene.AddRigidBody(shape1, float2(5, 5));
 
     glutMainLoop();
 

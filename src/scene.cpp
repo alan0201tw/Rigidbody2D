@@ -38,7 +38,7 @@ void Scene::Render() const
 std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position)
 {
     std::shared_ptr<RigidBody2D> body = 
-        std::make_shared<RigidBody2D>(_shape, _position, 0.1f, 1.0f);
+        std::make_shared<RigidBody2D>(_shape, _position, 0.2f, 1.0f);
 
     _shape->m_body = body;
 

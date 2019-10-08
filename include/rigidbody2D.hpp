@@ -11,6 +11,8 @@ class RigidBody2D
     typedef linalg::aliases::float2 float2;
 private:
     float2 m_position;
+
+public:
     float2 m_velocity;
     float2 m_force;
 

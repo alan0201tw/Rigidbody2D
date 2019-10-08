@@ -4,6 +4,8 @@
 
 #include "GL/freeglut.h"
 
+#include <iostream>
+
 Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
     return visitor->visitCircle(shared_from_this());
@@ -12,25 +14,53 @@ Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
 {
     // TODO
-    return Manifold(false);
+    //return Manifold(false);
+    return Manifold(
+        nullptr,
+        nullptr,
+        float2(0, 0),
+        0.0f,
+        false
+    );
 }
 
 Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
 {
-    float2 position = m_body->GetPosition();
-    float2 otherPosition = _shape->m_body->GetPosition();
+    bool isHit = true;
+    float2 normal = _shape->m_body->GetPosition() - m_body->GetPosition();
 
     float radius_sum_sqr = m_radius + _shape->m_radius;
     radius_sum_sqr *= radius_sum_sqr;
 
-    float x_sum = (position[0] + otherPosition[0]);
-    float x_sum_sqr = x_sum * x_sum;
+    // length2 returns length square
+    if(linalg::length2(normal) > radius_sum_sqr)
+    {
+        isHit = false;
+    }
 
-    float y_sum = (position[1] + otherPosition[1]);
-    float y_sum_sqr = y_sum * y_sum;
+    float penetration;
+    float distance = linalg::length(normal);
+    if(distance != 0)
+    {
+        penetration = radius_sum_sqr - distance;
+        normal = normal / distance;
+    }
+    else
+    {
+        penetration = m_radius;
+        normal = float2(1, 0);
+    }
 
-    bool isColliding = (radius_sum_sqr < x_sum_sqr + y_sum_sqr);
-    return Manifold(isColliding);
+    // std::cout << "normal = " << normal[0] << " , " << normal[1] << std::endl;
+    // std::cout << "penetration = " << penetration << std::endl;
+
+    return Manifold(
+        m_body,
+        _shape->m_body,
+        normal,
+        penetration,
+        isHit
+    );
 }
 
 void Circle::Render()
