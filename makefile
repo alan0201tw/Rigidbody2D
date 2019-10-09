@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS) $(BINDIR)/$(TARGET).o
 	@echo "Linking..."
 	@echo "$(CC) $^ $(CFLAGS) -o $(TARGET) $(LIB)"; $(CC) $^ $(CFLAGS) -o $(TARGET) $(LINKS)
 
-$(BINDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+$(BINDIR)/%.o: $(SRCDIR)/%.$(SRCEXT) 
 	@mkdir -p $(BINDIR)
 	@echo "$(CC) $(CFLAGS) $(INCDIR) -c -o $@ $<"; $(CC) $(CFLAGS) $(INCDIR) -c -o $@ $<
 

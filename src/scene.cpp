@@ -4,6 +4,8 @@
 #include "shape.hpp"
 #include "integrator.hpp"
 
+#include <iostream>
+
 void Scene::Step() const
 {
     for(size_t i = 0; i < m_bodies.size(); i++)
@@ -17,10 +19,20 @@ void Scene::Step() const
         }
     }
 
+    for(size_t iteration = 0; iteration < m_iterations; iteration++)
+    {
+        for(size_t i = 0; i < m_manifolds.size(); i++)
+        {
+            m_manifolds[i].Resolve();
+        }
+    }
+
     for(size_t i = 0; i < m_manifolds.size(); i++)
     {
-        m_manifolds[i].Resolve();
+        m_manifolds[i].PositionalCorrection();
     }
+
+    m_manifolds.clear();
 
     // integrate
     static ExplicitEulerIntegrator integrator;

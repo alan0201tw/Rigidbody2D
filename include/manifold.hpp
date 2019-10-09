@@ -5,7 +5,7 @@
 class Manifold
 {
     typedef linalg::aliases::float2 float2;
-private:
+public:
     std::shared_ptr<RigidBody2D> m_body0, m_body1;
     float2 m_normal;
     float m_penetration;
@@ -22,4 +22,5 @@ public:
         bool _isHit);
 
     void Resolve() const;
+    void PositionalCorrection() const;
 };

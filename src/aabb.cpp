@@ -1,10 +1,9 @@
 #include "aabb.hpp"
 
 #include "manifold.hpp"
+#include "circle.hpp"
 
 #include "GL/freeglut.h"
-
-#include <iostream>
 
 Manifold AABB::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
@@ -35,12 +34,14 @@ Manifold AABB::visitAABB(std::shared_ptr<AABB> _shape)
             // Find out which axis is axis of least penetration
             if(x_overlap > y_overlap)
             {
-                penetration = x_overlap;
+                normal = (normal.y < 0.0f) ? float2(0, -1) : float2(0, 1);
+                penetration = y_overlap;
                 isHit = true;
             }
             else
             {
-                penetration = y_overlap;
+                normal = (normal.x < 0.0f) ? float2(-1, 0) : float2(1, 0);
+                penetration = x_overlap;
                 isHit = true;
             }
         }
@@ -61,8 +62,8 @@ Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
     // TODO
     // return Manifold(false);
     return Manifold(
-        nullptr,
-        nullptr,
+        m_body,
+        _shape->m_body,
         float2(0, 0),
         0.0f,
         false

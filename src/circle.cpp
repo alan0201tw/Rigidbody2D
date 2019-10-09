@@ -1,10 +1,11 @@
 #include "circle.hpp"
 
 #include "manifold.hpp"
+#include "aabb.hpp"
 
 #include "GL/freeglut.h"
 
-#include <iostream>
+#include <cmath>
 
 Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
@@ -16,8 +17,8 @@ Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
     // TODO
     //return Manifold(false);
     return Manifold(
-        nullptr,
-        nullptr,
+        m_body,
+        _shape->m_body,
         float2(0, 0),
         0.0f,
         false
@@ -29,8 +30,8 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
     bool isHit = true;
     float2 normal = _shape->m_body->GetPosition() - m_body->GetPosition();
 
-    float radius_sum_sqr = m_radius + _shape->m_radius;
-    radius_sum_sqr *= radius_sum_sqr;
+    float radius_sum = m_radius + _shape->m_radius;
+    float radius_sum_sqr = radius_sum * radius_sum;
 
     // length2 returns length square
     if(linalg::length2(normal) > radius_sum_sqr)
@@ -42,7 +43,7 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
     float distance = linalg::length(normal);
     if(distance != 0)
     {
-        penetration = radius_sum_sqr - distance;
+        penetration = radius_sum - distance;
         normal = normal / distance;
     }
     else
@@ -50,9 +51,6 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
         penetration = m_radius;
         normal = float2(1, 0);
     }
-
-    // std::cout << "normal = " << normal[0] << " , " << normal[1] << std::endl;
-    // std::cout << "penetration = " << penetration << std::endl;
 
     return Manifold(
         m_body,
@@ -66,7 +64,6 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
 void Circle::Render()
 {
     const size_t k_segments = 20;
-	const float M_PI = 3.14159265358979323846f;
 
     glPushMatrix();
     glBegin(GL_LINE_LOOP);

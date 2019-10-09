@@ -20,7 +20,8 @@ private:
     mutable std::vector<Manifold> m_manifolds;
 
 public:
-    Scene(float _dt) : m_deltaTime(_dt) {}
+    Scene(float _dt) 
+        : m_deltaTime(_dt), m_iterations(10), m_bodies(), m_manifolds() {}
 
     void Step() const;
     void Render() const;

@@ -1,6 +1,6 @@
 #include "integrator.hpp"
 
-#include <iostream>
+#include <algorithm>
 
 void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, float deltaTime)
 {
@@ -21,10 +21,9 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
 
         _bodies[i]->m_force = float2(0, 0);
 
-        // std::cout << "dt = " << deltaTime << std::endl;
-
-        // std::cout << "_bodies[i]->m_position : " << _bodies[i]->m_position[0] << " " << _bodies[i]->m_position[1]
-        //     << " , _bodies[i]->m_velocity : " << _bodies[i]->m_velocity[0]<< " " << _bodies[i]->m_velocity[1] << std::endl;
+        // add a floor here
+        _bodies[i]->m_position.y = 
+            std::clamp(_bodies[i]->m_position.y, -3.0f, 50.0f);
     }
 
     // TODO : we might need to add gravity somewhere.

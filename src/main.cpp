@@ -15,6 +15,7 @@
 namespace
 {
     Scene scene(1.0f / 60.0f);
+    typedef linalg::aliases::float2 float2;
 }
 
 class GLUTCallback
@@ -77,7 +78,16 @@ public:
 
     static void Mouse(int button, int state, int x, int y)
     {
-
+        if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+        {
+            // std::cout << "x , y = " << x << " , " << y << std::endl;
+            float2 position = float2( (float)x / 10.0f - 30.0f, (float)y / -10.0f + 30.0f );
+            std::shared_ptr<Circle> shape = std::make_shared<Circle>(
+                3.0f
+                //float2 (5, 5)
+            );
+            auto body = scene.AddRigidBody(shape, position);
+        }
     }
 };
 
@@ -105,31 +115,30 @@ int main(int argc, char* argv[])
     gluOrtho2D(-30, 30, -30, 30);
     //glOrtho(-300, 300, -300, 300, 0.01, 1000.0);
 
-
     // fill in the scene
-    typedef linalg::aliases::float2 float2;
     {
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-        auto body = scene.AddRigidBody(shape, float2(0, 0));
-        body->m_velocity = float2(5, 5);
+        auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
+        body->m_velocity = float2(15, 0);
     }
     {
         std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
-        scene.AddRigidBody(shape1, float2(5, 5));
+        scene.AddRigidBody(shape1, float2(-5, 6));
     }
-    {
-        std::shared_ptr<AABB> shape2 = std::make_shared<AABB>(
-            float2 (5, 5)
-        );
-        auto body1 = scene.AddRigidBody(shape2, float2(-8, 0));
-        body1->m_velocity = float2(8, 5);
-    }
-    {
-        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (5, 5)
-        );
-        scene.AddRigidBody(shape3, float2(5, 5));
-    }
+    // {
+    //     std::shared_ptr<AABB> shape2 = std::make_shared<AABB>(
+    //         float2 (5, 5)
+    //     );
+    //     auto body1 = scene.AddRigidBody(shape2, float2(-5, 20));
+    //     body1->m_velocity = float2(8, 5);
+    // }
+    // {
+    //     std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
+    //         float2 (5, 5)
+    //     );
+    //     auto body1 = scene.AddRigidBody(shape3, float2(5, 20));
+    //     body1->m_velocity = float2(-8, 5);
+    // }
     
     glutMainLoop();
 
