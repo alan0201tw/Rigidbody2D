@@ -15,6 +15,14 @@ Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 
 Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
 {
+    // in impulse engine, the normal is flipped ( * -1 )
+    // because in that architecture, the body0 and body1 is already
+    // decided before manifold is actually generated 
+    // ( the normal and penetration ), so it has to be reversed
+    // in order to match the API. In this project, since the field
+    // of body0 and body1 is filled in 'when' computing manifold,
+    // we do not need to do that (reversing normal).
+
     auto manifold = CollisionHelper::GenerateManifold(
         _shape,
         shared_from_this()
