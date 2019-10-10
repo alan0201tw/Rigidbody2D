@@ -2,6 +2,7 @@
 
 #include "manifold.hpp"
 #include "aabb.hpp"
+#include "collision.hpp"
 
 #include "GL/freeglut.h"
 
@@ -14,15 +15,12 @@ Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 
 Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
 {
-    // TODO
-    //return Manifold(false);
-    return Manifold(
-        m_body,
-        _shape->m_body,
-        float2(0, 0),
-        0.0f,
-        false
+    auto manifold = CollisionHelper::GenerateManifold(
+        _shape,
+        shared_from_this()
     );
+
+    return manifold;
 }
 
 Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)

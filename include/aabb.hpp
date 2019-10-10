@@ -19,4 +19,6 @@ public:
     virtual Manifold visitCircle(std::shared_ptr<Circle> _shape) override;
 
     virtual void Render() override;
+
+    friend class CollisionHelper;
 };

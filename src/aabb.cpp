@@ -2,6 +2,7 @@
 
 #include "manifold.hpp"
 #include "circle.hpp"
+#include "collision.hpp"
 
 #include "GL/freeglut.h"
 
@@ -59,15 +60,12 @@ Manifold AABB::visitAABB(std::shared_ptr<AABB> _shape)
 
 Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
 {
-    // TODO
-    // return Manifold(false);
-    return Manifold(
-        m_body,
-        _shape->m_body,
-        float2(0, 0),
-        0.0f,
-        false
+    auto manifold = CollisionHelper::GenerateManifold(
+        shared_from_this(),
+        _shape
     );
+
+    return manifold;
 }
 
 void AABB::Render()

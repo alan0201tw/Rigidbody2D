@@ -14,10 +14,11 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
     for(size_t i = 0; i < _bodies.size(); i++)
     {
         // add gravity
-        _bodies[i]->m_force += float2(0, -9.8f);
+        _bodies[i]->m_force += float2(0, -9.8f) * _bodies[i]->m_mass;
 
         _bodies[i]->m_position += deltaTime * _bodies[i]->m_velocity;
-        _bodies[i]->m_velocity += deltaTime * _bodies[i]->m_force;
+        // delta_v = delta_time * a = delta_time * F / m;
+        _bodies[i]->m_velocity += deltaTime * (_bodies[i]->m_force / _bodies[i]->m_mass);
 
         _bodies[i]->m_force = float2(0, 0);
 
