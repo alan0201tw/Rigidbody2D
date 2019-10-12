@@ -17,6 +17,12 @@ void Manifold::Resolve() const
     if(m_isHit == false)
         return;
 
+    // if(m_body0->m_mass == 0.0f && m_body1->m_mass == 0.0f)
+    // {
+    //     m_body0->m_velocity = float2(0.0f, 0.0f);
+    //     m_body1->m_velocity = float2(0.0f, 0.0f);
+    // }
+
     float2 rv = m_body1->m_velocity - m_body0->m_velocity;
 
     float velAlongNormal = linalg::dot(rv, m_normal);
@@ -33,14 +39,19 @@ void Manifold::Resolve() const
     if( linalg::length2(rv) < linalg::length2( 1.0/60.0f * float2(0, -9.8f) ) + 0.0001f )
         e = 0.0f;
 
+    const float inv_mass_a = 
+        (m_body0->m_mass != 0.0f) ? (1.0f / m_body0->m_mass) : 0.0f;
+    const float inv_mass_b = 
+        (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
+
     float j = -(1.0f + e) * velAlongNormal;
-    j /= (1.0f / m_body0->m_mass) + (1.0f / m_body1->m_mass);
+    j /= inv_mass_a + inv_mass_b;
     
     // Apply impulse
     float2 impulse = m_normal * j;
     
-    m_body0->m_velocity -= (1.0f / m_body0->m_mass) * impulse;
-    m_body1->m_velocity += (1.0f / m_body1->m_mass) * impulse;
+    m_body0->m_velocity -= inv_mass_a * impulse;
+    m_body1->m_velocity += inv_mass_b * impulse;
 }
 
 void Manifold::PositionalCorrection() const
@@ -48,8 +59,10 @@ void Manifold::PositionalCorrection() const
     const float percent = 0.4f; // usually 20% to 80%
     const float slop = 0.05f; // usually 0.01 to 0.1
 
-    const float inv_mass_a = (1.0f / m_body0->m_mass);
-    const float inv_mass_b = (1.0f / m_body1->m_mass);
+    const float inv_mass_a = 
+        (m_body0->m_mass != 0.0f) ? (1.0f / m_body0->m_mass) : 0.0f;
+    const float inv_mass_b = 
+        (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
 
     float2 correction = 
         (std::max( m_penetration - slop, 0.0f ) / (inv_mass_a + inv_mass_b))

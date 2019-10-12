@@ -145,6 +145,14 @@ int main(int argc, char* argv[])
         auto body1 = scene.AddRigidBody(shape3, float2(5, 20));
         body1->m_velocity = float2(-8, 5);
     }
+    {
+        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
+            float2 (35, 1)
+        );
+        auto body1 = scene.AddRigidBody(shape3, float2(0, -10));
+        // setting an infinite mass
+        body1->m_mass = 0.0f;
+    }
     
     glutMainLoop();
 
