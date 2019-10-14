@@ -54,7 +54,7 @@ Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::
         _a->m_body,
         _b->m_body,
         (inside == true) ? -normal : normal,
-        r - d,
+        (inside == true) ? r : r - d,
         isHit
     );
 }

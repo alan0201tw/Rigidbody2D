@@ -70,19 +70,19 @@ Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
 
 void AABB::Render()
 {
+    glPushMatrix();
+
+    glTranslatef(m_body->GetPosition().x, m_body->GetPosition().y, 0);
+    glRotatef(m_body->m_orientation, 0, 0, 1);
+
     glBegin(GL_LINE_LOOP);
     {
-        glPushMatrix();
-        //glTranslatef(m_body->GetPosition().x, m_body->GetPosition().y, 0.0f);
-
         float2 half_extent = m_extent / 2.0f;
 
-        glVertex2f(m_body->GetPosition().x - half_extent[0], m_body->GetPosition().y - half_extent[1]);
-        glVertex2f(m_body->GetPosition().x - half_extent[0], m_body->GetPosition().y + half_extent[1]);
-        glVertex2f(m_body->GetPosition().x + half_extent[0], m_body->GetPosition().y + half_extent[1]);
-        glVertex2f(m_body->GetPosition().x + half_extent[0], m_body->GetPosition().y - half_extent[1]);
-        
-        glPopMatrix();
+        glVertex2f(0 - half_extent[0], 0 - half_extent[1]);
+        glVertex2f(0 - half_extent[0], 0 + half_extent[1]);
+        glVertex2f(0 + half_extent[0], 0 + half_extent[1]);
+        glVertex2f(0 + half_extent[0], 0 - half_extent[1]);
     }
     glEnd();
 
@@ -92,9 +92,11 @@ void AABB::Render()
     {
         glPushMatrix();
 
-        glVertex2f(m_body->GetPosition().x, m_body->GetPosition().y);
+        glVertex2f(0, 0);
 
         glPopMatrix();
     }
     glEnd();
+
+    glPopMatrix();
 }

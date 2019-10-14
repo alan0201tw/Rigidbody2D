@@ -14,12 +14,16 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
         if(_bodies[i]->m_mass == 0.0f)
             continue;
 
+        // Linear
         _bodies[i]->m_position += deltaTime * _bodies[i]->m_velocity;
         // delta_v = delta_time * a = delta_time * F / m;
         _bodies[i]->m_velocity += deltaTime * (_bodies[i]->m_force / _bodies[i]->m_mass);
-        
         // add gravity
         _bodies[i]->m_velocity += deltaTime * float2(0, -9.8f * 5);
+
+        // Rotation
+        _bodies[i]->m_orientation += _bodies[i]->m_angularVelocity * deltaTime;
+        _bodies[i]->m_angularVelocity += deltaTime * (_bodies[i]->m_torque / _bodies[i]->m_inertia);
 
         _bodies[i]->m_force = float2(0, 0);
     }

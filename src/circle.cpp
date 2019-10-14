@@ -87,4 +87,16 @@ void Circle::Render()
     }
     glEnd( );
     glPopMatrix();
+
+    glPushMatrix();
+    glBegin( GL_LINE_STRIP );
+    float c = std::cos( m_body->m_orientation );
+    float s = std::sin( m_body->m_orientation );
+    float2 r( s, c );
+    r *= m_radius;
+    r = r + m_body->GetPosition();
+    glVertex2f( m_body->GetPosition().x, m_body->GetPosition().y );
+    glVertex2f( r.x, r.y );
+    glEnd( );
+    glPopMatrix();
 }

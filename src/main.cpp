@@ -142,6 +142,7 @@ int main(int argc, char* argv[])
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
         auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
         body->m_velocity = float2(15, 0);
+        // body->m_torque = 1.0f;
     }
     {
         std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
@@ -153,13 +154,15 @@ int main(int argc, char* argv[])
         );
         auto body1 = scene.AddRigidBody(shape2, float2(-5, 20));
         body1->m_velocity = float2(8, 5);
+        // body1->m_torque = 5.0f;
     }
     {
         std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (5, 5)
+            float2 (15, 15)
         );
         auto body1 = scene.AddRigidBody(shape3, float2(5, 20));
         body1->m_velocity = float2(-8, 5);
+        body1->m_mass = 9;
     }
     {
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
