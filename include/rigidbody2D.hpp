@@ -19,12 +19,19 @@ public:
     float m_restitution;
     float m_mass;
 
+    float m_staticFriction;
+    float m_dynamicFriction;
+
     std::shared_ptr<Shape> m_shape;
 
 public:
-    RigidBody2D(std::shared_ptr<Shape> _shape, float2 _position, float _restitution, float _mass)
+    RigidBody2D(
+        std::shared_ptr<Shape> _shape, float2 _position, 
+        float _restitution, float _mass, float _staticFriction, float _dynamicFriction)
         : m_position(_position), m_velocity(float2(0, 0)), m_force(float2(0, 0))
-        , m_restitution(_restitution), m_mass(_mass), m_shape(_shape) {}
+        , m_restitution(_restitution), m_mass(_mass)
+        , m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
+        , m_shape(_shape) {}
 
     inline std::shared_ptr<Shape> GetShape() { return m_shape; }
 

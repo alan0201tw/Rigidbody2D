@@ -17,12 +17,6 @@ void Manifold::Resolve() const
     if(m_isHit == false)
         return;
 
-    // if(m_body0->m_mass == 0.0f && m_body1->m_mass == 0.0f)
-    // {
-    //     m_body0->m_velocity = float2(0.0f, 0.0f);
-    //     m_body1->m_velocity = float2(0.0f, 0.0f);
-    // }
-
     float2 rv = m_body1->m_velocity - m_body0->m_velocity;
 
     float velAlongNormal = linalg::dot(rv, m_normal);
@@ -52,6 +46,49 @@ void Manifold::Resolve() const
     
     m_body0->m_velocity -= inv_mass_a * impulse;
     m_body1->m_velocity += inv_mass_b * impulse;
+
+    /**
+     *  The following section will be handling frictions.
+     */
+
+    // Re-calculate relative velocity after normal impulse is applied.
+    float2 rv_after_impulse = m_body1->m_velocity - m_body0->m_velocity;
+    // Solve for the tangent vector
+    float2 tangent = 
+        rv_after_impulse - linalg::dot(rv_after_impulse, m_normal) * m_normal;
+
+    if(linalg::length2(tangent) > 0.0f)
+    {
+        tangent = linalg::normalize(tangent);
+    }
+
+    // Solve for magnitude to apply along the friction vector
+    float jt = -1 * linalg::dot( rv_after_impulse, tangent );
+    jt /= inv_mass_a + inv_mass_b;
+
+    // Don't apply tiny friction impulses
+    if(std::abs(jt) < 0.0001f)
+    {
+        return;
+    }
+
+    // Coulumb's law
+    const float sf = std::sqrt(m_body0->m_staticFriction * m_body1->m_staticFriction);
+    const float df = std::sqrt(m_body0->m_dynamicFriction * m_body1->m_dynamicFriction);
+
+    float2 tangentImpulse;
+    if(std::abs( jt ) < j * sf)
+    {
+        tangentImpulse = tangent * jt;
+    }
+    else
+    {
+        tangentImpulse = tangent * -j * df;
+    }
+
+    // Apply friction impulse
+    m_body0->m_velocity -= inv_mass_a * tangentImpulse;
+    m_body1->m_velocity += inv_mass_b * tangentImpulse;
 }
 
 void Manifold::PositionalCorrection() const

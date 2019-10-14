@@ -129,6 +129,15 @@ int main(int argc, char* argv[])
     //glOrtho(-300, 300, -300, 300, 0.01, 1000.0);
 
     // fill in the scene
+    // floor
+    {
+        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
+            float2 (35, 1)
+        );
+        auto body1 = scene.AddRigidBody(shape3, float2(0, -10));
+        // setting an infinite mass
+        body1->m_mass = 0.0f;
+    }
     {
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
         auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
@@ -153,12 +162,9 @@ int main(int argc, char* argv[])
         body1->m_velocity = float2(-8, 5);
     }
     {
-        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (35, 1)
-        );
-        auto body1 = scene.AddRigidBody(shape3, float2(0, -10));
-        // setting an infinite mass
-        body1->m_mass = 0.0f;
+        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+        auto body = scene.AddRigidBody(shape, float2(-30.0f, -5.0f));
+        body->m_velocity = float2(40, 0);
     }
     
     glutMainLoop();
