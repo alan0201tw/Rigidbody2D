@@ -8,6 +8,7 @@
 
 void Scene::Step() const
 {
+    // First : Generate manifolds
     for(size_t i = 0; i < m_bodies.size(); i++)
     {
         for(size_t j = i + 1; j < m_bodies.size(); j++)
@@ -18,7 +19,7 @@ void Scene::Step() const
             m_manifolds.push_back(manifold);
         }
     }
-
+    // Then : Resolve impulses by manifolds
     for(size_t iteration = 0; iteration < m_iterations; iteration++)
     {
         for(size_t i = 0; i < m_manifolds.size(); i++)
@@ -26,17 +27,17 @@ void Scene::Step() const
             m_manifolds[i].Resolve();
         }
     }
-
+    // Then : Do positional correction
     for(size_t i = 0; i < m_manifolds.size(); i++)
     {
         m_manifolds[i].PositionalCorrection();
     }
 
+    // Remember to clear the manifolds
     m_manifolds.clear();
 
     // integrate
-    static ExplicitEulerIntegrator integrator;
-    integrator.Integrate(m_bodies, m_deltaTime);
+    m_integrator->Integrate(m_bodies, m_deltaTime);
 }
 
 void Scene::Render() const

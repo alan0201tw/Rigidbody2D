@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "rigidbody2D.hpp"
+#include "integrator.hpp"
 
 class Manifold;
 
@@ -19,9 +20,11 @@ private:
     // this field should be updated by Step()
     mutable std::vector<Manifold> m_manifolds;
 
+    std::shared_ptr<Integrator> m_integrator;
+
 public:
-    Scene(float _dt) 
-        : m_deltaTime(_dt), m_iterations(10), m_bodies(), m_manifolds() {}
+    Scene(float _dt, uint32_t _iterations, std::shared_ptr<Integrator> _integrator) 
+        : m_deltaTime(_dt), m_iterations(_iterations), m_bodies(), m_manifolds(), m_integrator(_integrator) {}
 
     void Step() const;
     void Render() const;

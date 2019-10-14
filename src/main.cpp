@@ -11,11 +11,18 @@
 #include "scene.hpp"
 #include "circle.hpp"
 #include "aabb.hpp"
+#include "integrator.hpp"
 
 namespace
 {
     const float deltaTime = 1.0 / 60.0f;
-    Scene scene(deltaTime);
+    const uint32_t positional_correction_iterations = 10;
+    const float accumulate_upper_bound = 
+        std::max(deltaTime, 0.1f);
+
+    Scene scene(deltaTime, positional_correction_iterations,
+        std::make_shared<ExplicitEulerIntegrator>()
+    );
     typedef linalg::aliases::float2 float2;
 }
 
@@ -55,14 +62,13 @@ public:
         accumulator += (float)Clock::Elapsed();
         Clock::Reset();
 
-        // std::cout << "accumulator = " << accumulator << std::endl;
-        // std::cout << "Clock::Elapsed() = " << Clock::Elapsed() << std::endl;
-
-        accumulator = std::clamp(accumulator, 0.0f, 0.1f);
+        // Notice that in order to prevent a burst of calling to step(), 
+        // we clamp the accumulated time steps. However, if the delta time
+        // is larger than the upper bound of clamp, step() will never be
+        // called.
+        accumulator = std::clamp(accumulator, 0.0f, accumulate_upper_bound);
         while(accumulator >= deltaTime)
         {
-            // step();
-            // std::cout << "step" << std::endl;
             scene.Step();
 
             accumulator -= deltaTime;
@@ -91,7 +97,8 @@ public:
         {
             float2 position = float2( (float)x / 10.0f - 30.0f, (float)y / -10.0f + 30.0f );
             std::shared_ptr<AABB> shape = std::make_shared<AABB>(
-                float2 (3, 3)
+                //float2 (3, 3)
+                float2( drand48() * 5 + 3, drand48() * 5 + 3 )
             );
             auto body = scene.AddRigidBody(shape, position);
         }
