@@ -1,6 +1,7 @@
 #include "collision.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 #include "linalg.h"
 
@@ -36,7 +37,7 @@ Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::
                 closest.y = -y_half_extent;
         }
     }
-
+    
     normal = normal - closest;
     float d = linalg::length2(normal);
     float r = _b->m_radius;
@@ -47,14 +48,16 @@ Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::
         isHit = false;
     }
 
+    // if inside, d < r
     normal = linalg::normalize(normal);
 
     d = std::sqrt(d);
+
     return Manifold(
         _a->m_body,
         _b->m_body,
         (inside == true) ? -normal : normal,
-        (inside == true) ? r : r - d,
+        (inside == true) ? r + d : r - d,
         isHit
     );
 }
