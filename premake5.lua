@@ -5,7 +5,8 @@ workspace "Rigidbody2D"
     configurations
     {
         -- only debug for this hobby project
-        "Debug"
+        "Debug",
+        "Release"
     }
 
 -- variables
@@ -61,3 +62,6 @@ project "Rigidbody2D"
 
     filter  "configurations:Debug"
         symbols "On"
+    
+    filter { "configurations:Release" }
+        optimize "On"
