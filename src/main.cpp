@@ -156,6 +156,18 @@ int main(int argc, char* argv[])
         body1->m_mass = 0.0f;
     }
     {
+        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
+            float2 (35, 1)
+        );
+        auto body1 = scene.AddRigidBody(shape3, float2(10, -20));
+        // setting an infinite mass
+        body1->m_mass = 0.0f;
+        // std::shared_ptr<Circle> shape = std::make_shared<Circle>(100.0f);
+        // auto body = scene.AddRigidBody(shape, float2(0.0f, -100.0f));
+        // body->m_mass = 0.0f;
+    }
+    // dynamic objects
+    {
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
         auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
         body->m_velocity = float2(15, 0);

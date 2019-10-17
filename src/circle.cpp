@@ -69,7 +69,7 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
 
 void Circle::Render()
 {
-    const size_t k_segments = 20;
+    const size_t k_segments = 200;
 
     glPushMatrix();
     glBegin(GL_LINE_LOOP);

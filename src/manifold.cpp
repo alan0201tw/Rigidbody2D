@@ -38,6 +38,9 @@ void Manifold::Resolve() const
     const float inv_mass_b = 
         (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
 
+    if(inv_mass_a == 0.0f && inv_mass_b == 0.0f)
+        return;
+
     float j = -(1.0f + e) * velAlongNormal;
     j /= inv_mass_a + inv_mass_b;
     
@@ -100,6 +103,9 @@ void Manifold::PositionalCorrection() const
         (m_body0->m_mass != 0.0f) ? (1.0f / m_body0->m_mass) : 0.0f;
     const float inv_mass_b = 
         (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
+
+    if(inv_mass_a == 0.0f && inv_mass_b == 0.0f)
+        return;
 
     float2 correction = 
         (std::max( m_penetration - slop, 0.0f ) / (inv_mass_a + inv_mass_b))
