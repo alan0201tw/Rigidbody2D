@@ -12,6 +12,7 @@
 #include "circle.hpp"
 #include "aabb.hpp"
 #include "integrator.hpp"
+#include "joint.hpp"
 
 namespace
 {
@@ -190,13 +191,16 @@ int main(int argc, char* argv[])
             float2 (15, 15)
         );
         auto body1 = scene.AddRigidBody(shape3, float2(5, 20));
-        body1->SetVelocity(float2(-8, 5));
-        body1->SetMass(9.0f);
-    }
-    {
+        // body1->SetVelocity(float2(-8, 5));
+        body1->SetMass(0.0f);
+        
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-        auto body = scene.AddRigidBody(shape, float2(-30.0f, -5.0f));
-        body->SetVelocity(float2(40, 0));
+        auto body = scene.AddRigidBody(shape, float2(-5.0f, -5.0f));
+        // body->SetVelocity(float2(40, 0));
+
+        std::shared_ptr<DistanceJoint> disJoint = 
+            std::make_shared<DistanceJoint>(body, body1, 15.0f);
+        scene.AddJoint(disJoint);
     }
     
     glutMainLoop();

@@ -33,6 +33,11 @@ void Scene::Step() const
         m_manifolds[i].PositionalCorrection();
     }
 
+    for(size_t i = 0; i < m_joints.size(); i++)
+    {
+        m_joints[i]->ApplyConstriant();
+    }
+
     // Remember to clear the manifolds
     m_manifolds.clear();
 
@@ -46,6 +51,10 @@ void Scene::Render() const
     {
         m_bodies[i]->GetShape()->Render();
     }
+    for(size_t i = 0; i < m_joints.size(); i++)
+    {
+        m_joints[i]->Render();
+    }
 }
 
 std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position)
@@ -57,4 +66,9 @@ std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, 
 
     m_bodies.push_back(body);
     return body;
+}
+
+void Scene::AddJoint(std::shared_ptr<Joint> _joint)
+{
+    m_joints.push_back(_joint);
 }

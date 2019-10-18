@@ -43,11 +43,15 @@ public:
 
     inline std::shared_ptr<Shape> GetShape() { return m_shape; }
     inline float2 GetPosition() { return m_position; }
+    inline float2 GetVelocity() { return m_velocity; }
     inline float GetOrientation() { return m_orientation; };
 
     // notice that we do not do negative mass testing here
     void SetMass(float _mass) { m_mass = _mass; }
     void SetVelocity(float2 _velo) { m_velocity = _velo; }
+    void AddVelocity(float2 _velo) { m_velocity += _velo; }
+    void SetForce(float2 _force) { m_force = _force; }
+    void AddForce(float2 _force) { m_force += _force; }
     
 
     friend class Manifold;

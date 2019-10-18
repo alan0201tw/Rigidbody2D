@@ -1,0 +1,37 @@
+#pragma once
+
+#include <memory>
+
+#include "linalg.h"
+
+class RigidBody2D;
+
+// an interface for any joints to implement
+// since some joints might not need two bodies, I will not
+// declare them in the parent class
+class Joint
+{
+protected:
+    typedef linalg::aliases::float2 float2;
+public:
+    virtual void ApplyConstriant() const = 0;
+    virtual void Render() const = 0;
+};
+
+class DistanceJoint : public Joint
+{
+private:
+    std::shared_ptr<RigidBody2D> m_body0, m_body1;
+    float m_maxDistance;
+
+public:
+    DistanceJoint(
+        std::shared_ptr<RigidBody2D> _body0, 
+        std::shared_ptr<RigidBody2D> _body1, 
+        float _maxDistance)
+        : m_body0(_body0), m_body1(_body1), m_maxDistance(_maxDistance)
+        {}
+
+    virtual void ApplyConstriant() const override;
+    virtual void Render() const override;
+};
