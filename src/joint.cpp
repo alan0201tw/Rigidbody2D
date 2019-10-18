@@ -16,7 +16,7 @@ void DistanceJoint::ApplyConstriant() const
     //     return;
     
     // -Ks * deltaL * diffPos_unit
-    float2 vec0to1 = 10.0f * (distance - m_maxDistance) * 
+    float2 vec0to1 = 100.0f * (distance - m_maxDistance) * 
         linalg::normalize(m_body1->GetPosition() - m_body0->GetPosition());
 
     m_body0->AddForce( vec0to1 );

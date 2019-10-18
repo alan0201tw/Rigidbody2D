@@ -58,6 +58,7 @@ project "Rigidbody2D"
         defines
         {
             "PLATFORM_WINDOWS",
+            "_USE_MATH_DEFINES"
         }
 
     filter  "configurations:Debug"
