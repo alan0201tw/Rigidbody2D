@@ -10,6 +10,8 @@ class AABB : public Shape, public std::enable_shared_from_this<AABB>
 private:
     float2 m_extent;
 
+    float2 getSupportPoint(const float2& dir) const;
+
 public:
     AABB(float2 _extent) : m_extent(_extent) {}
 

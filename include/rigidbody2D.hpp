@@ -12,7 +12,7 @@ class RigidBody2D
 private:
     float2 m_position;
 
-public:
+private:
     float2 m_velocity;
     float2 m_force;
 
@@ -40,9 +40,15 @@ public:
         , m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
         , m_shape(_shape) {}
 
-    inline std::shared_ptr<Shape> GetShape() { return m_shape; }
 
+    inline std::shared_ptr<Shape> GetShape() { return m_shape; }
     inline float2 GetPosition() { return m_position; }
+    inline float GetOrientation() { return m_orientation; };
+
+    // notice that we do not do negative mass testing here
+    void SetMass(float _mass) { m_mass = _mass; }
+    void SetVelocity(float2 _velo) { m_velocity = _velo; }
+    
 
     friend class Manifold;
     friend class ExplicitEulerIntegrator;

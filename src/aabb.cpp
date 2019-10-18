@@ -6,6 +6,37 @@
 
 #include "GL/freeglut.h"
 
+AABB::float2 AABB::getSupportPoint(const float2& dir) const
+{
+    // init as max
+    float bestProjection = 1e9;
+    float2 bestVertex;
+
+    const float2 position = m_body->GetPosition();
+    const float2 half_extent = m_extent / 2.0f;
+    std::array<float2, 4> vertices = 
+    {
+        position - half_extent,
+        position + half_extent,
+        float2(position.x + half_extent.x, position.y - half_extent.y),
+        float2(position.x - half_extent.x, position.y + half_extent.y),
+    };
+
+    for(size_t i = 0; i < 4; i++)
+    {
+        float2 v = vertices[i];
+        float projection = linalg::dot( v, dir );
+    
+        if(projection > bestProjection)
+        {
+            bestVertex = v;
+            bestProjection = projection;
+        }
+    }
+
+    return bestVertex;
+}
+
 Manifold AABB::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
 {
     return visitor->visitAABB(shared_from_this());
@@ -73,7 +104,7 @@ void AABB::Render()
     glPushMatrix();
 
     glTranslatef(m_body->GetPosition().x, m_body->GetPosition().y, 0);
-    glRotatef(m_body->m_orientation, 0, 0, 1);
+    glRotatef(m_body->GetOrientation(), 0, 0, 1);
 
     glBegin(GL_LINE_LOOP);
     {

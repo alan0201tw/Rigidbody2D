@@ -90,8 +90,8 @@ void Circle::Render()
 
     glPushMatrix();
     glBegin( GL_LINE_STRIP );
-    float c = std::cos( m_body->m_orientation );
-    float s = std::sin( m_body->m_orientation );
+    float c = std::cos( m_body->GetOrientation() );
+    float s = std::sin( m_body->GetOrientation() );
     float2 r( s, c );
     r *= m_radius;
     r = r + m_body->GetPosition();
