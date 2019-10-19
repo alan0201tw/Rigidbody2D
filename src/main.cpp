@@ -25,8 +25,8 @@ namespace
         std::make_shared<ExplicitEulerIntegrator>()
     );
 
-    float screen_width = 600;
-    float screen_height = 600;
+    int screen_width = 600;
+	int screen_height = 600;
 
     typedef linalg::aliases::float2 float2;
 }
@@ -123,7 +123,7 @@ public:
             std::shared_ptr<AABB> shape = std::make_shared<AABB>(
                 //float2 (3, 3)
 #ifdef _MSC_VER
-				float2(((double)rand() / (RAND_MAX)) * 5 + 3, ((double)rand() / (RAND_MAX)) * 5 + 3)
+				float2(((float)rand() / (RAND_MAX)) * 5 + 3, ((float)rand() / (RAND_MAX)) * 5 + 3)
 #else
                 float2( drand48() * 5 + 3, drand48() * 5 + 3 )
 #endif
@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
         
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
         auto body = scene.AddRigidBody(shape, float2(-5.0f, -5.0f));
-		body->SetMass(5.0f);
+		//body->SetMass(5.0f);
         // body->SetVelocity(float2(40, 0));
 
         std::shared_ptr<DistanceJoint> disJoint = 

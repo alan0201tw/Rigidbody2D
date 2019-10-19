@@ -75,7 +75,7 @@ void Circle::Render()
     glBegin(GL_LINE_LOOP);
     {
         float theta = 0.0f;
-        float inc = M_PI * 2.0f / k_segments;
+        float inc = (float)M_PI * 2.0f / k_segments;
         for(size_t i = 0; i < k_segments; ++i)
         {
             theta += inc;
