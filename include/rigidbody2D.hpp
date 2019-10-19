@@ -18,6 +18,7 @@ private:
 
     float m_restitution;
     float m_mass;
+	float m_invMass;
 
     float m_staticFriction;
     float m_dynamicFriction;
@@ -38,22 +39,45 @@ public:
         , m_restitution(_restitution), m_mass(_mass)
         , m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
         , m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
-        , m_shape(_shape) {}
+        , m_shape(_shape)
+	{
+		SetMass(_mass);
+	}
 
 
     inline std::shared_ptr<Shape> GetShape() { return m_shape; }
     inline float2 GetPosition() { return m_position; }
     inline float2 GetVelocity() { return m_velocity; }
-    inline float GetOrientation() { return m_orientation; };
+	inline float2 GetForce() { return m_force; }
+    inline float GetOrientation() { return m_orientation; }
+	inline float GetAngularVelocity() { return m_angularVelocity; }
+	inline float GetTorque() { return m_torque; }
+
+	inline float GetMass() { return m_mass; }
+	inline float GetInvMass() { return m_invMass; }
+
+	inline float GetInertia() { return m_inertia; }
 
     // notice that we do not do negative mass testing here
-    void SetMass(float _mass) { m_mass = _mass; }
+    void SetMass(float _mass)
+	{
+		m_mass = _mass;
+		m_invMass = (m_mass == 0.0f) ? 0.0f : (1 / m_mass);
+	}
+	void SetPosition(float2 _pos) { m_position = _pos; }
+	void AddPosition(float2 _pos) { m_position += _pos; }
+
     void SetVelocity(float2 _velo) { m_velocity = _velo; }
     void AddVelocity(float2 _velo) { m_velocity += _velo; }
+
     void SetForce(float2 _force) { m_force = _force; }
     void AddForce(float2 _force) { m_force += _force; }
-    
 
-    friend class Manifold;
-    friend class ExplicitEulerIntegrator;
+	void SetOrientation(float _ori) { m_orientation = _ori; }
+	void AddOrientation(float _ori) { m_orientation += _ori; }
+
+	void SetAngularVelocity(float _angVel) { m_angularVelocity = _angVel; }
+	void AddAngularVelocity(float _angVel) { m_angularVelocity += _angVel; }
+
+	friend class Manifold;
 };

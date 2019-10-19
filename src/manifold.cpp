@@ -22,6 +22,12 @@ void Manifold::Resolve() const
     float velAlongNormal = linalg::dot(rv, m_normal);
     if(velAlongNormal > 0.0f)
         return;
+
+	const float inv_mass_a = m_body0->GetInvMass();
+	const float inv_mass_b = m_body1->GetInvMass();
+
+	if (inv_mass_a == 0.0f && inv_mass_b == 0.0f)
+		return;
     
     float e = std::min(m_body0->m_restitution, m_body1->m_restitution);
     // Determine if we should perform a resting collision or not
@@ -32,14 +38,6 @@ void Manifold::Resolve() const
     // TODO : these values are hard-coded, try to refactor these
     if( linalg::length2(rv) < linalg::length2( 1.0/60.0f * float2(0, -9.8f) ) + 0.0001f )
         e = 0.0f;
-
-    const float inv_mass_a = 
-        (m_body0->m_mass != 0.0f) ? (1.0f / m_body0->m_mass) : 0.0f;
-    const float inv_mass_b = 
-        (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
-
-    if(inv_mass_a == 0.0f && inv_mass_b == 0.0f)
-        return;
 
     float j = -(1.0f + e) * velAlongNormal;
     j /= inv_mass_a + inv_mass_b;
@@ -96,13 +94,11 @@ void Manifold::Resolve() const
 
 void Manifold::PositionalCorrection() const
 {
-    const float percent = 0.4f; // usually 20% to 80%
-    const float slop = 0.05f; // usually 0.01 to 0.1
+    const float percent = 0.2f; // usually 20% to 80%
+    const float slop = 0.01f; // usually 0.01 to 0.1
 
-    const float inv_mass_a = 
-        (m_body0->m_mass != 0.0f) ? (1.0f / m_body0->m_mass) : 0.0f;
-    const float inv_mass_b = 
-        (m_body1->m_mass != 0.0f) ? (1.0f / m_body1->m_mass) : 0.0f;
+	const float inv_mass_a = m_body0->GetInvMass();
+	const float inv_mass_b = m_body1->GetInvMass();
 
     if(inv_mass_a == 0.0f && inv_mass_b == 0.0f)
         return;

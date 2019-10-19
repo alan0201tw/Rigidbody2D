@@ -11,21 +11,21 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
     */
     for(size_t i = 0; i < _bodies.size(); i++)
     {
-        if(_bodies[i]->m_mass == 0.0f)
+        if(_bodies[i]->GetInvMass() == 0.0f)
             continue;
 
         // Linear
-        _bodies[i]->m_position += deltaTime * _bodies[i]->m_velocity;
+        _bodies[i]->AddPosition(deltaTime * _bodies[i]->GetVelocity());
         // delta_v = delta_time * a = delta_time * F / m;
-        _bodies[i]->m_velocity += deltaTime * (_bodies[i]->m_force / _bodies[i]->m_mass);
+        _bodies[i]->AddVelocity(deltaTime * (_bodies[i]->GetForce() / _bodies[i]->GetMass()));
         // add gravity
-        _bodies[i]->m_velocity += deltaTime * float2(0, -9.8f * 5);
+        _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f * 5));
 
         // Rotation
-        _bodies[i]->m_orientation += _bodies[i]->m_angularVelocity * deltaTime;
-        _bodies[i]->m_angularVelocity += deltaTime * (_bodies[i]->m_torque / _bodies[i]->m_inertia);
+        _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);
+        _bodies[i]->AddAngularVelocity(deltaTime * (_bodies[i]->GetTorque() / _bodies[i]->GetInertia()));
 
-        _bodies[i]->m_force = float2(0, 0);
+        _bodies[i]->SetForce(float2(0, 0));
     }
 
     // TODO : we might need to add gravity somewhere.
