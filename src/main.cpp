@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
         // body->SetVelocity(float2(40, 0));
 
         std::shared_ptr<DistanceJoint> disJoint = 
-            std::make_shared<DistanceJoint>(body, body1, 15.0f);
+            std::make_shared<DistanceJoint>(body, body1, 5.0f);
         scene.AddJoint(disJoint);
     }
     

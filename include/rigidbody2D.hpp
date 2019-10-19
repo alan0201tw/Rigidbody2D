@@ -32,17 +32,15 @@ private:
     std::shared_ptr<Shape> m_shape;
 
 public:
-    RigidBody2D(
-        std::shared_ptr<Shape> _shape, float2 _position, float _restitution, 
-        float _mass, float _staticFriction, float _dynamicFriction)
-        : m_position(_position), m_velocity(float2(0, 0)), m_force(float2(0, 0))
-        , m_restitution(_restitution), m_mass(_mass)
-        , m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
-        , m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
-        , m_shape(_shape)
-	{
-		SetMass(_mass);
-	}
+	RigidBody2D(
+		std::shared_ptr<Shape> _shape, float2 _position, float _restitution,
+		float _mass, float _staticFriction, float _dynamicFriction)
+		: m_position(_position), m_velocity(float2(0, 0)), m_force(float2(0, 0))
+		, m_restitution(_restitution), m_mass(_mass), m_invMass((m_mass == 0.0f) ? 0.0f : (1 / m_mass))
+		, m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
+		, m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
+		, m_shape(_shape)
+	{}
 
 
     inline std::shared_ptr<Shape> GetShape() { return m_shape; }
