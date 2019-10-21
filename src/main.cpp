@@ -156,9 +156,13 @@ int main(int argc, char* argv[])
         std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
             float2 (35, 1)
         );
+
         auto body1 = scene.AddRigidBody(shape3, float2(0, -10));
         // setting an infinite mass
         body1->SetMass(0.0f);
+
+        // auto body11 = scene.AddRigidBody(shape3, float2(0, -10));
+        // body11->SetMass(0.0f);
     }
     {
         std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
