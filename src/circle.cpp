@@ -8,12 +8,12 @@
 
 #include <cmath>
 
-Manifold Circle::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
+Manifold Circle::accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const
 {
     return visitor->visitCircle(shared_from_this());
 }
 
-Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
+Manifold Circle::visitAABB(std::shared_ptr<const AABB> _shape) const
 {
     // in impulse engine, the normal is flipped ( * -1 )
     // because in that architecture, the body0 and body1 is already
@@ -31,7 +31,7 @@ Manifold Circle::visitAABB(std::shared_ptr<AABB> _shape)
     return manifold;
 }
 
-Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
+Manifold Circle::visitCircle(std::shared_ptr<const Circle> _shape) const
 {
     bool isHit = true;
     float2 normal = _shape->m_body->GetPosition() - m_body->GetPosition();
@@ -67,7 +67,7 @@ Manifold Circle::visitCircle(std::shared_ptr<Circle> _shape)
     );
 }
 
-void Circle::Render()
+void Circle::Render() const
 {
     const size_t k_segments = 200;
 

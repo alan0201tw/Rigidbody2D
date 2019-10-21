@@ -15,12 +15,12 @@ private:
 public:
     AABB(float2 _extent) : m_extent(_extent) {}
 
-    virtual Manifold accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor) override;
+    virtual Manifold accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const override;
 
-    virtual Manifold visitAABB(std::shared_ptr<AABB> _shape) override;
-    virtual Manifold visitCircle(std::shared_ptr<Circle> _shape) override;
+    virtual Manifold visitAABB(std::shared_ptr<const AABB> _shape) const override;
+    virtual Manifold visitCircle(std::shared_ptr<const Circle> _shape) const override;
 
-    virtual void Render() override;
+    virtual void Render() const override;
 
     friend class CollisionHelper;
 };

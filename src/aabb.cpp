@@ -37,12 +37,12 @@ AABB::float2 AABB::getSupportPoint(const float2& dir) const
     return bestVertex;
 }
 
-Manifold AABB::accept(std::shared_ptr<ShapeVisitor<Manifold>> visitor)
+Manifold AABB::accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const
 {
     return visitor->visitAABB(shared_from_this());
 }
 
-Manifold AABB::visitAABB(std::shared_ptr<AABB> _shape)
+Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
 {
     bool isHit = false;
     float2 normal = _shape->m_body->GetPosition() - m_body->GetPosition();
@@ -89,7 +89,7 @@ Manifold AABB::visitAABB(std::shared_ptr<AABB> _shape)
     );
 }
 
-Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
+Manifold AABB::visitCircle(std::shared_ptr<const Circle> _shape) const
 {
     auto manifold = CollisionHelper::GenerateManifold(
         shared_from_this(),
@@ -99,7 +99,7 @@ Manifold AABB::visitCircle(std::shared_ptr<Circle> _shape)
     return manifold;
 }
 
-void AABB::Render()
+void AABB::Render() const
 {
     glPushMatrix();
 

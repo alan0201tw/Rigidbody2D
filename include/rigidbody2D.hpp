@@ -39,22 +39,22 @@ public:
 		, m_restitution(_restitution), m_mass(_mass), m_invMass((m_mass == 0.0f) ? 0.0f : (1 / m_mass))
 		, m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
 		, m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
-		, m_shape(_shape)
+		, m_shape(std::move(_shape))
 	{}
 
 
-    inline std::shared_ptr<Shape> GetShape() { return m_shape; }
-    inline float2 GetPosition() { return m_position; }
-    inline float2 GetVelocity() { return m_velocity; }
-	inline float2 GetForce() { return m_force; }
-    inline float GetOrientation() { return m_orientation; }
-	inline float GetAngularVelocity() { return m_angularVelocity; }
-	inline float GetTorque() { return m_torque; }
+    inline std::shared_ptr<Shape> GetShape() const { return m_shape; }
+    inline float2 GetPosition() const { return m_position; }
+    inline float2 GetVelocity() const { return m_velocity; }
+	inline float2 GetForce() const { return m_force; }
+    inline float GetOrientation() const { return m_orientation; }
+	inline float GetAngularVelocity() const { return m_angularVelocity; }
+	inline float GetTorque() const { return m_torque; }
 
-	inline float GetMass() { return m_mass; }
-	inline float GetInvMass() { return m_invMass; }
+	inline float GetMass() const { return m_mass; }
+	inline float GetInvMass() const { return m_invMass; }
 
-	inline float GetInertia() { return m_inertia; }
+	inline float GetInertia() const { return m_inertia; }
 
     // notice that we do not do negative mass testing here
     void SetMass(float _mass)
