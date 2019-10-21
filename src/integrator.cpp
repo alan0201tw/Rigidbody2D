@@ -19,7 +19,7 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
         // delta_v = delta_time * a = delta_time * F / m;
         _bodies[i]->AddVelocity(deltaTime * (_bodies[i]->GetForce() / _bodies[i]->GetMass()));
         // add gravity
-        _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f * 5));
+        _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f));
 
         // Rotation
         _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);

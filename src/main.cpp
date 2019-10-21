@@ -2,6 +2,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 #include <GL/freeglut.h>
 
@@ -152,64 +153,68 @@ int main(int argc, char* argv[])
 
     // fill in the scene
     // floor
-    {
-        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (35, 1)
-        );
+    // {
+    //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+    //         float2 (35, 1)
+    //     );
 
-        auto body1 = scene.AddRigidBody(shape3, float2(0, -10));
-        // setting an infinite mass
-        body1->SetMass(0.0f);
-
-        // auto body11 = scene.AddRigidBody(shape3, float2(0, -10));
-        // body11->SetMass(0.0f);
-    }
-    {
-        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (35, 1)
-        );
-        auto body1 = scene.AddRigidBody(shape3, float2(10, -20));
-        // setting an infinite mass
-        body1->SetMass(0.0f);
-        // std::shared_ptr<Circle> shape = std::make_shared<Circle>(100.0f);
-        // auto body = scene.AddRigidBody(shape, float2(0.0f, -100.0f));
-        // body->m_mass = 0.0f;
-    }
+    //     auto body = scene.AddRigidBody(shape, float2(0, -10));
+    //     // setting an infinite mass
+    //     body->SetMass(0.0f);
+    // }
+    // {
+    //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+    //         float2 (35, 1)
+    //     );
+    //     auto body = scene.AddRigidBody(shape, float2(10, -20));
+    //     // setting an infinite mass
+    //     body->SetMass(0.0f);
+    // }
     // dynamic objects
+    // {
+    //     std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+    //     auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
+    //     body->SetVelocity(float2(15, 0));
+    // }
+    // {
+    //     std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+    //     scene.AddRigidBody(shape, float2(-5, 6));
+    // }
+    // {
+    //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+    //         float2 (5, 5)
+    //     );
+    //     auto body = scene.AddRigidBody(shape, float2(-5, 20));
+    //     body->SetVelocity(float2(8, 5));
+    // }
     {
-        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-        auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
-        body->SetVelocity(float2(15, 0));
-        // body->m_torque = 1.0f;
-    }
-    {
-        std::shared_ptr<Circle> shape1 = std::make_shared<Circle>(2.0f);
-        scene.AddRigidBody(shape1, float2(-5, 6));
-    }
-    {
-        std::shared_ptr<AABB> shape2 = std::make_shared<AABB>(
-            float2 (5, 5)
-        );
-        auto body1 = scene.AddRigidBody(shape2, float2(-5, 20));
-        body1->SetVelocity(float2(8, 5));
-        // body1->m_torque = 5.0f;
-    }
-    {
-        std::shared_ptr<AABB> shape3 = std::make_shared<AABB>(
-            float2 (15, 15)
-        );
-        auto body1 = scene.AddRigidBody(shape3, float2(5, 20));
-        // body1->SetVelocity(float2(-8, 5));
-        body1->SetMass(0.0f);
-        
-        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-        auto body = scene.AddRigidBody(shape, float2(-5.0f, -5.0f));
-		//body->SetMass(5.0f);
-        // body->SetVelocity(float2(40, 0));
+        const size_t box_size = 11;
 
-        std::shared_ptr<SpringJoint> disJoint = 
-            std::make_shared<SpringJoint>(body, body1, 10.0f, 5.0f);
-        scene.AddJoint(disJoint);
+        std::vector< std::shared_ptr<RigidBody2D> > boxes;
+        boxes.reserve(box_size);
+
+        float theta = 0.0f;
+        float deltaTheta = (float) M_PI / (box_size - 1);
+
+        for(size_t i = 0; i < box_size; i++)
+        {
+            auto shape = std::make_shared<AABB>(float2 (1, 1));
+            boxes[i] = scene.AddRigidBody(shape, 
+                float2(25.0f * std::cos(theta), 25.0f * std::sin(0))
+            );
+
+            theta += deltaTheta;
+        }
+
+        boxes[0]->SetMass(0.0f);
+        boxes[box_size - 1]->SetMass(0.0f);
+
+        for(size_t i = 1; i < box_size; i++)
+        {
+            std::shared_ptr<SpringJoint> disJoint = 
+                std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], 5.0f, 100.0f);
+            scene.AddJoint(disJoint);
+        }
     }
     
     glutMainLoop();
