@@ -61,7 +61,8 @@ std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, 
 {
     if(_shape->m_body != nullptr)
     {
-        std::cerr << "Scene::AddRigidBody : Error trying to reuse shape!" << std::endl;
+        throw std::runtime_error("Error : Scene::AddRigidBody : Trying to reuse shape!");
+        // std::cerr << "Error : Scene::AddRigidBody : Trying to reuse shape!" << std::endl;
         return nullptr;
     }
 
