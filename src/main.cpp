@@ -199,9 +199,9 @@ int main(int argc, char* argv[])
         for(size_t i = 0; i < box_size; i++)
         {
             auto shape = std::make_shared<AABB>(float2 (1, 1));
-            boxes[i] = scene.AddRigidBody(shape, 
-                float2(25.0f * std::cos(theta), 25.0f * std::sin(0))
-            );
+            boxes.push_back(scene.AddRigidBody(shape, 
+                float2(25.0f * std::cos(theta), 25.0f * std::sin(0.0f))
+            ));
 
             theta += deltaTheta;
         }
