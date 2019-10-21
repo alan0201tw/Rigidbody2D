@@ -18,18 +18,21 @@ public:
     virtual void Render() const = 0;
 };
 
-class DistanceJoint : public Joint
+class SpringJoint : public Joint
 {
 private:
     std::shared_ptr<RigidBody2D> m_body0, m_body1;
-    float m_maxDistance;
+    float m_restLength;
+    float m_stiffness;
 
 public:
-    DistanceJoint(
+    explicit SpringJoint(
         std::shared_ptr<RigidBody2D> _body0, 
         std::shared_ptr<RigidBody2D> _body1, 
-        float _maxDistance)
-        : m_body0(_body0), m_body1(_body1), m_maxDistance(_maxDistance)
+        float _restLength,
+        float _stiffness)
+        : m_body0(_body0), m_body1(_body1), m_restLength(_restLength)
+        , m_stiffness(_stiffness)
         {}
 
     virtual void ApplyConstriant() const override;

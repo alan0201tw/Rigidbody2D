@@ -21,7 +21,9 @@ void Manifold::Resolve() const
 
     float velAlongNormal = linalg::dot(rv, m_normal);
     if(velAlongNormal > 0.0f)
+    {
         return;
+    }
 
 	const float inv_mass_a = m_body0->GetInvMass();
 	const float inv_mass_b = m_body1->GetInvMass();

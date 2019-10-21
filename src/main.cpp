@@ -203,8 +203,8 @@ int main(int argc, char* argv[])
 		//body->SetMass(5.0f);
         // body->SetVelocity(float2(40, 0));
 
-        std::shared_ptr<DistanceJoint> disJoint = 
-            std::make_shared<DistanceJoint>(body, body1, 5.0f);
+        std::shared_ptr<SpringJoint> disJoint = 
+            std::make_shared<SpringJoint>(body, body1, 10.0f, 5.0f);
         scene.AddJoint(disJoint);
     }
     
