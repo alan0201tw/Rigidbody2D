@@ -17,7 +17,7 @@
 
 namespace
 {
-    const float deltaTime = 1.0f / 60.0f;
+    const float deltaTime = 1.0f / 1000.0f;
     const uint32_t positional_correction_iterations = 10;
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);
@@ -188,7 +188,9 @@ int main(int argc, char* argv[])
     //     body->SetVelocity(float2(8, 5));
     // }
     {
-        const size_t box_size = 11;
+        const size_t box_size = 21;
+		const float length = 25.0f;
+		const float rest_length = (length / box_size);
 
         std::vector< std::shared_ptr<RigidBody2D> > boxes;
         boxes.reserve(box_size);
@@ -200,8 +202,9 @@ int main(int argc, char* argv[])
         {
             auto shape = std::make_shared<AABB>(float2 (1, 1));
             boxes.push_back(scene.AddRigidBody(shape, 
-                float2(25.0f * std::cos(theta), 25.0f * std::sin(0.0f))
+                float2(length * std::cos(theta), 0.0f)
             ));
+			boxes[i]->SetMass(1.0f);
 
             theta += deltaTheta;
         }
@@ -212,7 +215,7 @@ int main(int argc, char* argv[])
         for(size_t i = 1; i < box_size; i++)
         {
             std::shared_ptr<SpringJoint> disJoint = 
-                std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], 5.0f, 100.0f);
+                std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], rest_length, 100.0f);
             scene.AddJoint(disJoint);
         }
     }

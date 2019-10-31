@@ -19,7 +19,7 @@ void SpringJoint::ApplyConstriant() const
     float2 vec0to1 = m_stiffness * (distance - m_restLength) * diffPos_unit;
 
     auto deltaVel = m_body1->GetVelocity() - m_body0->GetVelocity();
-    float2 damper = 0.1f * m_stiffness * linalg::dot(deltaVel, diffPos_unit) * diffPos_unit;
+    float2 damper = (1.0f/30.0f) * m_stiffness * linalg::dot(deltaVel, diffPos_unit) * diffPos_unit;
 
     m_body0->AddForce( vec0to1 + damper );
     m_body1->AddForce( (vec0to1 + damper) * -1 );
