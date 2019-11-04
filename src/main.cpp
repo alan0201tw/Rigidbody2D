@@ -153,15 +153,15 @@ int main(int argc, char* argv[])
 
     // fill in the scene
     // floor
-    // {
-    //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
-    //         float2 (35, 1)
-    //     );
+    {
+        std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+            float2 (35, 1)
+        );
 
-    //     auto body = scene.AddRigidBody(shape, float2(0, -10));
-    //     // setting an infinite mass
-    //     body->SetMass(0.0f);
-    // }
+        auto body = scene.AddRigidBody(shape, float2(0, -10));
+        // setting an infinite mass
+        body->SetMass(0.0f);
+    }
     // {
     //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
     //         float2 (35, 1)
@@ -171,22 +171,22 @@ int main(int argc, char* argv[])
     //     body->SetMass(0.0f);
     // }
     // dynamic objects
-    // {
-    //     std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-    //     auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
-    //     body->SetVelocity(float2(15, 0));
-    // }
-    // {
-    //     std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
-    //     scene.AddRigidBody(shape, float2(-5, 6));
-    // }
-    // {
-    //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(
-    //         float2 (5, 5)
-    //     );
-    //     auto body = scene.AddRigidBody(shape, float2(-5, 20));
-    //     body->SetVelocity(float2(8, 5));
-    // }
+    {
+        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+        auto body = scene.AddRigidBody(shape, float2(-12.5f, 5.0f));
+        body->SetVelocity(float2(15, 0));
+    }
+    {
+        std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
+        auto body = scene.AddRigidBody(shape, float2(-5, 16));
+    }
+    {
+        std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+            float2 (5, 5)
+        );
+        auto body = scene.AddRigidBody(shape, float2(-5, 20));
+        body->SetVelocity(float2(8, 5));
+    }
     {
         const size_t box_size = 21;
 		const float length = 25.0f;
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
         {
             auto shape = std::make_shared<AABB>(float2 (1, 1));
             boxes.push_back(scene.AddRigidBody(shape, 
-                float2(length * std::cos(theta), 0.0f)
+                float2(length * std::cos(theta), -18.0f)
             ));
 			boxes[i]->SetMass(1.0f);
 
@@ -216,6 +216,35 @@ int main(int argc, char* argv[])
         {
             std::shared_ptr<SpringJoint> disJoint = 
                 std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], rest_length, 100.0f);
+            // std::shared_ptr<DistanceJoint> disJoint = 
+            //     std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i]);
+            scene.AddJoint(disJoint);
+        }
+    }
+    {
+        const size_t box_size = 7;
+		const float length = 15.0f;
+		const float rest_length = (length / box_size);
+
+        std::vector< std::shared_ptr<RigidBody2D> > boxes;
+        boxes.reserve(box_size);
+
+        for(size_t i = 0; i < box_size; i++)
+        {
+            auto shape = std::make_shared<AABB>(float2 (1, 1));
+            boxes.push_back(scene.AddRigidBody(shape, 
+                float2( -20.0f + -3.0f * i, 30 - rest_length * i)
+            ));
+			boxes[i]->SetMass(1.0f);
+            boxes[i]->SetVelocity(float2(1.0f, 0.0f));
+        }
+
+        boxes[0]->SetMass(0.0f);
+
+        for(size_t i = 1; i < box_size; i++)
+        {
+            std::shared_ptr<DistanceJoint> disJoint = 
+                std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i], rest_length * 3.0f);
             scene.AddJoint(disJoint);
         }
     }

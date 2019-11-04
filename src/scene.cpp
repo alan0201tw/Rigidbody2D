@@ -19,6 +19,7 @@ void Scene::Step() const
             m_manifolds.push_back(manifold);
         }
     }
+
     // Then : Resolve impulses by manifolds
     for(size_t iteration = 0; iteration < m_iterations; iteration++)
     {
@@ -33,6 +34,7 @@ void Scene::Step() const
         m_manifolds[i].PositionalCorrection();
     }
 
+    // Preprocess : apply joint constraint
     for(size_t i = 0; i < m_joints.size(); i++)
     {
         m_joints[i]->ApplyConstriant();

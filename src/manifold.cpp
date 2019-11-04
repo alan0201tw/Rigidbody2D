@@ -38,7 +38,7 @@ void Manifold::Resolve() const
     // Ref : https://github.com/RandyGaul/ImpulseEngine/blob/master/Manifold.cpp#L49
     
     // TODO : these values are hard-coded, try to refactor these
-    if( linalg::length2(rv) < linalg::length2( 1.0/60.0f * float2(0, -9.8f) ) + 0.0001f )
+    if( linalg::length2(rv) < linalg::length2( 1.0 / 1000.0f * float2(0, -9.8f) ) + 0.0001f )
         e = 0.0f;
 
     float j = -(1.0f + e) * velAlongNormal;
