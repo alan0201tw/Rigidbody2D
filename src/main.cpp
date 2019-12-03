@@ -23,7 +23,8 @@ namespace
         std::max(deltaTime, 0.1f);
 
     Scene scene(deltaTime, positional_correction_iterations,
-        std::make_shared<ExplicitEulerIntegrator>()
+        // std::make_shared<ExplicitEulerIntegrator>()
+        std::make_shared<NewtonIntegrator>()
     );
 
     int screen_width = 600;

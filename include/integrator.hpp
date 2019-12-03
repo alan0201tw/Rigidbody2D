@@ -19,3 +19,9 @@ class ExplicitEulerIntegrator : public Integrator
 public:
     virtual void Integrate(const std::vector<BodyRef>& _bodies, float deltaTime) override;
 };
+
+class NewtonIntegrator : public Integrator
+{
+public:
+    virtual void Integrate(const std::vector<BodyRef>& _bodies, float deltaTime) override;
+};
