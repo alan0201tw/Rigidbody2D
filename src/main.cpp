@@ -18,7 +18,10 @@
 namespace
 {
     // change to 3.0f / 1000.0f to test RK4
-    const float deltaTime = 3.0f / 1000.0f;
+	// RK4 should act bouncy and strange; ExpEuler should straight up break down
+	// if deltaTime is 2.0f / 1000.0f
+	// RK4 should still act normal-ish; ExpEuler will act bouncy and strange
+    const float deltaTime = 2.0f / 1000.0f;
     const uint32_t positional_correction_iterations = 10;
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);

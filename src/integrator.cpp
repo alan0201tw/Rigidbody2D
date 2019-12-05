@@ -74,13 +74,21 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
         throw std::runtime_error("RungeKuttaFourthIntegrator has no target scene.");
     }
 
-    // this stores the absolute value of position and velocity
-    StateStep currentState[_bodies.size()];
-    // below four arrays store the delta value of each state
-    StateStep deltaK1State[_bodies.size()];
-    StateStep deltaK2State[_bodies.size()];
-    StateStep deltaK3State[_bodies.size()];
-    StateStep deltaK4State[_bodies.size()];
+    //// this stores the absolute value of position and velocity
+    //StateStep currentState[_bodies.size()];
+    //// below four arrays store the delta value of each state
+    //StateStep deltaK1State[_bodies.size()];
+    //StateStep deltaK2State[_bodies.size()];
+    //StateStep deltaK3State[_bodies.size()];
+    //StateStep deltaK4State[_bodies.size()];
+
+	// this stores the absolute value of position and velocity
+	std::vector<StateStep> currentState(_bodies.size());
+	// below four arrays store the delta value of each state
+	std::vector<StateStep> deltaK1State(_bodies.size());
+	std::vector<StateStep> deltaK2State(_bodies.size());
+	std::vector<StateStep> deltaK3State(_bodies.size());
+	std::vector<StateStep> deltaK4State(_bodies.size());
 
     // when using vectors
     // currentState.reserve(_bodies.size());
