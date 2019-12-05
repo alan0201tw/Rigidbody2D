@@ -17,14 +17,19 @@
 
 namespace
 {
-    const float deltaTime = 1.0f / 1000.0f;
+    // change to 3.0f / 1000.0f to test RK4
+    const float deltaTime = 3.0f / 1000.0f;
     const uint32_t positional_correction_iterations = 10;
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);
 
+    auto integrator = std::make_shared<RungeKuttaFourthIntegrator>();
+    // std::make_shared<ExplicitEulerIntegrator>()
+    // std::make_shared<NewtonIntegrator>()
+    // std::make_shared<RungeKuttaFourthIntegrator>()
+
     Scene scene(deltaTime, positional_correction_iterations,
-        // std::make_shared<ExplicitEulerIntegrator>()
-        std::make_shared<NewtonIntegrator>()
+        integrator
     );
 
     int screen_width = 600;
@@ -151,6 +156,12 @@ int main(int argc, char* argv[])
     // NOTE : please do not use glutTimerFunc.
     // We need you to practice on designing the loop itself,
     // resolving the different update rate of physics and rendering.
+
+    auto rk4 = std::dynamic_pointer_cast<RungeKuttaFourthIntegrator>(integrator);
+    if(rk4)
+    {
+        rk4->scene = std::make_shared<Scene>(scene);
+    }
 
     // fill in the scene
     // floor
