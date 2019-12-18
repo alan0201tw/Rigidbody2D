@@ -15,7 +15,7 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BINDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 # Compile main
 $(TARGET): $(OBJECTS) $(BINDIR)/$(TARGET).o
 	@echo "Linking..."
-	@echo "$(CC) $^ $(CFLAGS) -o $(TARGET) $(LIB)"; $(CC) $^ $(CFLAGS) -o $(TARGET) $(LINKS)
+	@echo "$(CC) $^ $(CFLAGS) -o $(TARGET) $(LINKS)"; $(CC) $^ $(CFLAGS) -o $(TARGET) $(LINKS)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.$(SRCEXT) 
 	@mkdir -p $(BINDIR)
