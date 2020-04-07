@@ -170,12 +170,12 @@ int main(int argc, char* argv[])
     // floor
     {
         std::shared_ptr<AABB> shape = std::make_shared<AABB>(
-            float2 (35, 1)
+            float2 (35, 2)
         );
 
         auto body = scene.AddRigidBody(shape, float2(0, -10));
         // setting an infinite mass
-        body->SetMass(0.0f);
+        body->SetStatic();
     }
     // {
     //     std::shared_ptr<AABB> shape = std::make_shared<AABB>(

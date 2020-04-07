@@ -62,9 +62,23 @@ public:
     // notice that we do not do negative mass testing here
     void SetMass(float _mass)
 	{
+		if (_mass == 0.0f)
+		{
+			SetStatic();
+			return;
+		}
 		m_mass = _mass;
 		m_invMass = (m_mass == 0.0f) ? 0.0f : (1 / m_mass);
 	}
+
+	void SetStatic()
+	{
+		m_mass = 0.0f;
+		m_invMass = 0.0f;
+		m_inertia = 0.0f;
+		m_invInertia = 0.0f;
+	}
+
 	void SetPosition(float2 _pos) { m_position = _pos; }
 	void AddPosition(float2 _pos) { m_position += _pos; }
 

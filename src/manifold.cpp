@@ -36,9 +36,10 @@ void Manifold::Resolve() const
     float2 ra = (m_contactPoint - m_body0->GetPosition());
     float2 rb = (m_contactPoint - m_body1->GetPosition());
 
-    // float2 rv = m_body1->m_velocity - m_body0->m_velocity;
-    float2 rv = m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
-         - m_body0->m_velocity - linalg::cross(m_body0->m_angularVelocity, ra);
+    //float2 rv = m_body1->m_velocity - m_body0->m_velocity;
+    float2 rv = 
+		m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
+		- m_body0->m_velocity - linalg::cross(m_body0->m_angularVelocity, ra);
 
     float velAlongNormal = linalg::dot(rv, m_normal);
     if(velAlongNormal > 0.0f)
@@ -51,8 +52,8 @@ void Manifold::Resolve() const
     // Ref : https://github.com/RandyGaul/ImpulseEngine/blob/master/Manifold.cpp#L49
     
     // TODO : these values are hard-coded, try to refactor these
-    // if( linalg::length2(rv) < linalg::length2( 1.0 / 1000.0f * float2(0, -9.8f) ) + 0.0001f )
-    //     e = 0.0f;
+     if( linalg::length2(rv) < linalg::length2( 1.0f / 1000.0f * float2(0, -9.8f) ) + 0.0001f )
+         e = 0.0f;
 
     const float inv_inertia_a = m_body0->GetInvInertia();
 	const float inv_inertia_b = m_body1->GetInvInertia();
@@ -78,9 +79,10 @@ void Manifold::Resolve() const
      *  The following section will be handling frictions.
      */
     // Re-calculate relative velocity after normal impulse is applied.
-    // float2 rv_after_impulse = m_body1->m_velocity - m_body0->m_velocity;
-    float2 rv_after_impulse = m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
-         - m_body0->m_velocity - linalg::cross(m_body0->m_angularVelocity, ra);
+    //float2 rv_after_impulse = m_body1->m_velocity - m_body0->m_velocity;
+    float2 rv_after_impulse = 
+		m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
+		- m_body0->m_velocity - linalg::cross(m_body0->m_angularVelocity, ra);
     // Solve for the tangent vector
     float2 tangent = 
         rv_after_impulse - linalg::dot(rv_after_impulse, m_normal) * m_normal;
@@ -88,7 +90,7 @@ void Manifold::Resolve() const
     tangent = safe_normalize(tangent);
 
     // Solve for magnitude to apply along the friction vector
-    float jt = -1 * linalg::dot( rv_after_impulse, tangent );
+    float jt = -1.0f * linalg::dot( rv_after_impulse, tangent );
     jt /= invMassSum;
 
     // Don't apply tiny friction impulses
