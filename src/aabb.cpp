@@ -5,6 +5,8 @@
 #include "collision.hpp"
 #include "util.hpp"
 
+#include <algorithm>
+
 #include "GL/freeglut.h"
 
 AABB::float2 AABB::getSupportPoint(const float2& dir) const
@@ -53,6 +55,8 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
     float x_overlap = a_extent_x + b_extent_x - std::abs(normal.x);
 
     float penetration = 0.0f;
+    float2 contactPoint;
+
     if(x_overlap > 0.0f)
     {
         // Calculate half extents along y axis for each object
@@ -68,25 +72,53 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
             {
                 normal = (normal.y < 0.0f) ? float2(0, -1) : float2(0, 1);
                 penetration = y_overlap;
+
+                std::array<float, 4> all_x_values = { 
+                    m_body->GetPosition().x - a_extent_x,
+                    m_body->GetPosition().x + a_extent_x,
+                    _shape->m_body->GetPosition().x - b_extent_x,
+                    _shape->m_body->GetPosition().x + b_extent_x,
+                };
+
+                std::sort(all_x_values.begin(), all_x_values.end());
+
+                contactPoint = float2(
+                    all_x_values[2],
+                    m_body->GetPosition().y + a_extent_y * normal.y
+                );
+
                 isHit = true;
             }
             else
             {
                 normal = (normal.x < 0.0f) ? float2(-1, 0) : float2(1, 0);
                 penetration = x_overlap;
+
+                std::array<float, 4> all_y_values = { 
+                    m_body->GetPosition().y - a_extent_y,
+                    m_body->GetPosition().y + a_extent_y,
+                    _shape->m_body->GetPosition().y - b_extent_y,
+                    _shape->m_body->GetPosition().y + b_extent_y,
+                };
+
+                std::sort(all_y_values.begin(), all_y_values.end());
+
+                contactPoint = float2(
+                    m_body->GetPosition().x + a_extent_x * normal.x,
+                    all_y_values[2]
+                );
                 isHit = true;
             }
         }
     }
     normal = linalg::normalize(normal);
-    float2 contactPoint = m_body->GetPosition() + penetration * normal;
     
     // No separating axis found, therefor there is at least one overlapping axis
     return Manifold(
         m_body,
         _shape->m_body,
         contactPoint,
-        linalg::normalize(normal),
+        normal,
         penetration,
         isHit
     );

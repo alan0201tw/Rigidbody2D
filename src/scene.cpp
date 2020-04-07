@@ -4,6 +4,8 @@
 #include "shape.hpp"
 #include "integrator.hpp"
 
+#include "GL/freeglut.h"
+
 #include <iostream>
 
 void Scene::Step() const
@@ -57,6 +59,42 @@ void Scene::Render() const
     {
         m_joints[i]->Render();
     }
+
+    for(size_t i = 0; i < m_bodies.size(); i++)
+    {
+        for(size_t j = i + 1; j < m_bodies.size(); j++)
+        {
+            Manifold manifold = 
+                m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
+
+            m_manifolds.push_back(manifold);
+        }
+    }
+
+    for(size_t i = 0; i < m_manifolds.size(); i++)
+    {
+        if(m_manifolds[i].m_isHit == false)
+            continue;
+        glPushAttrib(GL_CURRENT_BIT);
+        glBegin(GL_LINE_STRIP);
+        {
+            glPushMatrix();
+            
+            glColor3f(0.0f, 1.0f, 0.3f);
+
+            glVertex2f(m_manifolds[i].m_contactPoint.x, 
+            m_manifolds[i].m_contactPoint.y);
+
+            glVertex2f(m_manifolds[i].m_contactPoint.x + m_manifolds[i].m_normal.x, 
+            m_manifolds[i].m_contactPoint.y + m_manifolds[i].m_normal.y);
+
+            glPopMatrix();
+        }
+        glEnd();
+        glPopAttrib();
+    }
+    
+    m_manifolds.clear();
 }
 
 std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position)
