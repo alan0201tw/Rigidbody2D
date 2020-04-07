@@ -24,10 +24,11 @@ void ExplicitEulerIntegrator::Integrate(const std::vector<BodyRef>& _bodies, flo
         _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f));
 
         // Rotation
-        // _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);
-        // _bodies[i]->AddAngularVelocity(deltaTime * (_bodies[i]->GetTorque() / _bodies[i]->GetInertia()));
+        _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);
+        _bodies[i]->AddAngularVelocity(deltaTime * (_bodies[i]->GetTorque() * _bodies[i]->GetInvInertia()));
 
         _bodies[i]->SetForce(float2(0, 0));
+        _bodies[i]->SetTorque(0.0f);
     }
 
     // TODO : we might need to add gravity somewhere.
@@ -57,14 +58,12 @@ void NewtonIntegrator::Integrate(const std::vector<BodyRef>& _bodies, float delt
         _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f));
 
         // Rotation
-        // _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);
-        // _bodies[i]->AddAngularVelocity(deltaTime * (_bodies[i]->GetTorque() / _bodies[i]->GetInertia()));
+        _bodies[i]->AddOrientation(_bodies[i]->GetAngularVelocity() * deltaTime);
+        _bodies[i]->AddAngularVelocity(deltaTime * (_bodies[i]->GetTorque() * _bodies[i]->GetInvInertia()));
 
         _bodies[i]->SetForce(float2(0, 0));
+        _bodies[i]->SetTorque(0.0f);
     }
-
-    // TODO : we might need to add gravity somewhere.
-    // maybe define the gravity vector in scene class.
 }
 
 void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, float deltaTime)

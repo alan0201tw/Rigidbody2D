@@ -47,20 +47,24 @@ Manifold Circle::visitCircle(std::shared_ptr<const Circle> _shape) const
 
     float penetration;
     float distance = linalg::length(normal);
+    float2 contactPoint;
     if(distance != 0)
     {
         penetration = radius_sum - distance;
         normal = normal / distance;
+        contactPoint = normal * m_radius + m_body->GetPosition();
     }
     else
     {
         penetration = m_radius;
         normal = float2(1, 0);
+        contactPoint = m_body->GetPosition();
     }
 
     return Manifold(
         m_body,
         _shape->m_body,
+        contactPoint,
         normal,
         penetration,
         isHit
@@ -69,7 +73,7 @@ Manifold Circle::visitCircle(std::shared_ptr<const Circle> _shape) const
 
 void Circle::Render() const
 {
-    const size_t k_segments = 200;
+    const size_t k_segments = 20;
 
     glPushMatrix();
     glBegin(GL_LINE_LOOP);
@@ -89,14 +93,19 @@ void Circle::Render() const
     glPopMatrix();
 
     glPushMatrix();
-    glBegin( GL_LINE_STRIP );
-    float c = std::cos( m_body->GetOrientation() );
-    float s = std::sin( m_body->GetOrientation() );
-    float2 r( s, c );
-    r *= m_radius;
-    r = r + m_body->GetPosition();
-    glVertex2f( m_body->GetPosition().x, m_body->GetPosition().y );
-    glVertex2f( r.x, r.y );
-    glEnd( );
+    glPushAttrib(GL_CURRENT_BIT);
+    {
+        glBegin( GL_LINE_STRIP );
+        float c = std::cos( m_body->GetOrientation() );
+        float s = std::sin( m_body->GetOrientation() );
+        float2 r( c, s );
+        r *= m_radius;
+        r = r + m_body->GetPosition();
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f( m_body->GetPosition().x, m_body->GetPosition().y );
+        glVertex2f( r.x, r.y );
+        glEnd( );
+    }
+    glPopAttrib();
     glPopMatrix();
 }

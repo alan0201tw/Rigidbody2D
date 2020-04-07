@@ -53,11 +53,15 @@ Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::
 
     d = std::sqrt(d);
 
+    normal = (inside == true) ? -normal : normal;
+    float penetration = (inside == true) ? r + d : r - d;
+
     return Manifold(
         _a->m_body,
         _b->m_body,
-        (inside == true) ? -normal : normal,
-        (inside == true) ? r + d : r - d,
+        _b->m_body->GetPosition() - _b->m_radius * normal,
+        normal,
+        penetration,
         isHit
     );
 }

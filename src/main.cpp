@@ -21,13 +21,13 @@ namespace
 	// RK4 should act bouncy and strange; ExpEuler should straight up break down
 	// if deltaTime is 2.0f / 1000.0f
 	// RK4 should still act normal-ish; ExpEuler will act bouncy and strange
-    const float deltaTime = 2.0f / 1000.0f;
+    const float deltaTime = 1.0f / 1000.0f;
     const uint32_t positional_correction_iterations = 10;
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);
 
-    auto integrator = std::make_shared<RungeKuttaFourthIntegrator>();
-    // std::make_shared<ExplicitEulerIntegrator>()
+    auto integrator = //std::make_shared<RungeKuttaFourthIntegrator>();
+    std::make_shared<ExplicitEulerIntegrator>();
     // std::make_shared<NewtonIntegrator>()
     // std::make_shared<RungeKuttaFourthIntegrator>()
 
@@ -194,6 +194,8 @@ int main(int argc, char* argv[])
     {
         std::shared_ptr<Circle> shape = std::make_shared<Circle>(2.0f);
         auto body = scene.AddRigidBody(shape, float2(-5, 16));
+        body->SetAngularVelocity(3.0f);
+        body->SetOrientation(3.14f);
     }
     {
         std::shared_ptr<AABB> shape = std::make_shared<AABB>(

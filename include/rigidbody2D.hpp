@@ -28,6 +28,7 @@ private:
     float m_angularVelocity;
     float m_torque;
     float m_inertia; // moment of inertia
+	float m_invInertia; // inverse of inertia
 
     std::shared_ptr<Shape> m_shape;
 
@@ -36,9 +37,10 @@ public:
 		std::shared_ptr<Shape> _shape, float2 _position, float _restitution,
 		float _mass, float _staticFriction, float _dynamicFriction)
 		: m_position(_position), m_velocity(float2(0, 0)), m_force(float2(0, 0))
-		, m_restitution(_restitution), m_mass(_mass), m_invMass((m_mass == 0.0f) ? 0.0f : (1 / m_mass))
+		, m_restitution(_restitution), m_mass(_mass), m_invMass((m_mass == 0.0f) ? 0.0f : (1.0f / m_mass))
 		, m_staticFriction(_staticFriction), m_dynamicFriction(_dynamicFriction)
 		, m_orientation(0.0f), m_angularVelocity(0.0f), m_torque(0.0f), m_inertia(1.0f)
+		, m_invInertia((m_inertia == 0.0f) ? 0.0f : (1.0f / m_inertia))
 		, m_shape(std::move(_shape))
 	{}
 
@@ -55,6 +57,7 @@ public:
 	inline float GetInvMass() const { return m_invMass; }
 
 	inline float GetInertia() const { return m_inertia; }
+	inline float GetInvInertia() const { return m_invInertia; }
 
     // notice that we do not do negative mass testing here
     void SetMass(float _mass)
@@ -76,6 +79,8 @@ public:
 
 	void SetAngularVelocity(float _angVel) { m_angularVelocity = _angVel; }
 	void AddAngularVelocity(float _angVel) { m_angularVelocity += _angVel; }
+
+	void SetTorque(float _torque) { m_torque = _torque; }
 
 	friend class Manifold;
 };

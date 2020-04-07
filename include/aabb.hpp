@@ -7,6 +7,7 @@
 class AABB : public Shape, public std::enable_shared_from_this<AABB>
 {
     typedef linalg::aliases::float2 float2;
+    typedef linalg::aliases::float2x2 float2x2;
 private:
     float2 m_extent;
 

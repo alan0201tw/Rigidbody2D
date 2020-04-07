@@ -3,23 +3,23 @@
 #include "manifold.hpp"
 #include "circle.hpp"
 #include "collision.hpp"
+#include "util.hpp"
 
 #include "GL/freeglut.h"
 
 AABB::float2 AABB::getSupportPoint(const float2& dir) const
 {
     // init as max
-    float bestProjection = 1e9;
+    float bestProjection = -1e9f;
     float2 bestVertex;
 
-    const float2 position = m_body->GetPosition();
     const float2 half_extent = m_extent / 2.0f;
     std::array<float2, 4> vertices = 
     {
-        position - half_extent,
-        position + half_extent,
-        float2(position.x + half_extent.x, position.y - half_extent.y),
-        float2(position.x - half_extent.x, position.y + half_extent.y),
+        - half_extent,
+          half_extent,
+        float2(half_extent.x, -half_extent.y),
+        float2(-half_extent.x, half_extent.y),
     };
 
     for(size_t i = 0; i < 4; i++)
@@ -78,11 +78,14 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
             }
         }
     }
+    normal = linalg::normalize(normal);
+    float2 contactPoint = m_body->GetPosition() + penetration * normal;
     
     // No separating axis found, therefor there is at least one overlapping axis
     return Manifold(
         m_body,
         _shape->m_body,
+        contactPoint,
         linalg::normalize(normal),
         penetration,
         isHit
@@ -104,7 +107,7 @@ void AABB::Render() const
     glPushMatrix();
 
     glTranslatef(m_body->GetPosition().x, m_body->GetPosition().y, 0);
-    glRotatef(m_body->GetOrientation(), 0, 0, 1);
+    glRotatef(radianToDegree(m_body->GetOrientation()), 0, 0, 1);
 
     glBegin(GL_LINE_LOOP);
     {
@@ -116,8 +119,6 @@ void AABB::Render() const
         glVertex2f(0 + half_extent[0], 0 - half_extent[1]);
     }
     glEnd();
-
-    // glPointSize( std::min(m_extent.x, m_extent.y) * 1.0f );
 
     glBegin(GL_POINTS);
     {
