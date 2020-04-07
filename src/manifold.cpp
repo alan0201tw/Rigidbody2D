@@ -18,10 +18,23 @@ Manifold::Manifold(
 void Manifold::Resolve() const
 {
     if(m_isHit == false)
+    {
         return;
+    }
 
-    float2 ra = m_contactPoint - m_body0->GetPosition();
-    float2 rb = m_contactPoint - m_body1->GetPosition();
+	const float inv_mass_a = m_body0->GetInvMass();
+	const float inv_mass_b = m_body1->GetInvMass();
+	if (inv_mass_a == 0.0f && inv_mass_b == 0.0f)
+    {
+        m_body0->SetVelocity(float2(0.0f, 0.0f));
+        m_body1->SetVelocity(float2(0.0f, 0.0f));
+		return;
+    }
+
+    // float2 ra = safe_normalize(m_contactPoint - m_body0->GetPosition());
+    // float2 rb = safe_normalize(m_contactPoint - m_body1->GetPosition());
+    float2 ra = (m_contactPoint - m_body0->GetPosition());
+    float2 rb = (m_contactPoint - m_body1->GetPosition());
 
     // float2 rv = m_body1->m_velocity - m_body0->m_velocity;
     float2 rv = m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
@@ -29,15 +42,7 @@ void Manifold::Resolve() const
 
     float velAlongNormal = linalg::dot(rv, m_normal);
     if(velAlongNormal > 0.0f)
-    {
         return;
-    }
-
-	const float inv_mass_a = m_body0->GetInvMass();
-	const float inv_mass_b = m_body1->GetInvMass();
-
-	if (inv_mass_a == 0.0f && inv_mass_b == 0.0f)
-		return;
     
     float e = std::min(m_body0->m_restitution, m_body1->m_restitution);
     // Determine if we should perform a resting collision or not
@@ -46,8 +51,8 @@ void Manifold::Resolve() const
     // Ref : https://github.com/RandyGaul/ImpulseEngine/blob/master/Manifold.cpp#L49
     
     // TODO : these values are hard-coded, try to refactor these
-    if( linalg::length2(rv) < linalg::length2( 1.0 / 1000.0f * float2(0, -9.8f) ) + 0.0001f )
-        e = 0.0f;
+    // if( linalg::length2(rv) < linalg::length2( 1.0 / 1000.0f * float2(0, -9.8f) ) + 0.0001f )
+    //     e = 0.0f;
 
     const float inv_inertia_a = m_body0->GetInvInertia();
 	const float inv_inertia_b = m_body1->GetInvInertia();
@@ -66,13 +71,14 @@ void Manifold::Resolve() const
     
     m_body0->m_velocity += inv_mass_a * -impulse;
     m_body1->m_velocity += inv_mass_b * impulse;
-    // m_body0->m_angularVelocity += inv_inertia_a * linalg::cross(ra, -impulse);
-    // m_body1->m_angularVelocity += inv_inertia_b * linalg::cross(rb, impulse);
+    m_body0->m_angularVelocity += inv_inertia_a * linalg::cross(ra, -impulse);
+    m_body1->m_angularVelocity += inv_inertia_b * linalg::cross(rb, impulse);
 
     /**
      *  The following section will be handling frictions.
      */
     // Re-calculate relative velocity after normal impulse is applied.
+    // float2 rv_after_impulse = m_body1->m_velocity - m_body0->m_velocity;
     float2 rv_after_impulse = m_body1->m_velocity + linalg::cross(m_body1->m_angularVelocity, rb)
          - m_body0->m_velocity - linalg::cross(m_body0->m_angularVelocity, ra);
     // Solve for the tangent vector
@@ -108,8 +114,8 @@ void Manifold::Resolve() const
     // Apply friction impulse
     m_body0->m_velocity += inv_mass_a * -tangentImpulse;
     m_body1->m_velocity += inv_mass_b * tangentImpulse;
-    // m_body0->m_angularVelocity += inv_inertia_a * linalg::cross(ra, -tangentImpulse);
-    // m_body1->m_angularVelocity += inv_inertia_b * linalg::cross(rb, tangentImpulse);
+    m_body0->m_angularVelocity += inv_inertia_a * linalg::cross(ra, -tangentImpulse);
+    m_body1->m_angularVelocity += inv_inertia_b * linalg::cross(rb, tangentImpulse);
 }
 
 void Manifold::PositionalCorrection() const

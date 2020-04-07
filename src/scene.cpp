@@ -30,6 +30,9 @@ void Scene::Step() const
             m_manifolds[i].Resolve();
         }
     }
+    // integrate
+    m_integrator->Integrate(m_bodies, m_deltaTime);
+
     // Then : Do positional correction
     for(size_t i = 0; i < m_manifolds.size(); i++)
     {
@@ -44,9 +47,6 @@ void Scene::Step() const
 
     // Remember to clear the manifolds
     m_manifolds.clear();
-
-    // integrate
-    m_integrator->Integrate(m_bodies, m_deltaTime);
 }
 
 void Scene::Render() const
