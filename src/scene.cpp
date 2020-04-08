@@ -75,23 +75,26 @@ void Scene::Render() const
     {
         if(m_manifolds[i].m_isHit == false)
             continue;
-        glPushAttrib(GL_CURRENT_BIT);
-        glBegin(GL_LINE_STRIP);
+        for(int k = 0; k < m_manifolds[i].m_contactPointCount; ++k)
         {
-            glPushMatrix();
-            
-            glColor3f(0.0f, 1.0f, 0.3f);
+            glPushAttrib(GL_CURRENT_BIT);
+            glBegin(GL_LINE_STRIP);
+            {
+                glPushMatrix();
+                
+                glColor3f(0.0f, 1.0f, 0.3f);
 
-            glVertex2f(m_manifolds[i].m_contactPoint.x, 
-            m_manifolds[i].m_contactPoint.y);
+                glVertex2f(m_manifolds[i].m_contactPoints[k].x, 
+                m_manifolds[i].m_contactPoints[k].y);
 
-            glVertex2f(m_manifolds[i].m_contactPoint.x + m_manifolds[i].m_normal.x, 
-            m_manifolds[i].m_contactPoint.y + m_manifolds[i].m_normal.y);
+                glVertex2f(m_manifolds[i].m_contactPoints[k].x + m_manifolds[i].m_normal.x, 
+                m_manifolds[i].m_contactPoints[k].y + m_manifolds[i].m_normal.y);
 
-            glPopMatrix();
+                glPopMatrix();
+            }
+            glEnd();
+            glPopAttrib();
         }
-        glEnd();
-        glPopAttrib();
     }
     
     m_manifolds.clear();

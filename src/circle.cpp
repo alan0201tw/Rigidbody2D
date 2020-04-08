@@ -64,7 +64,8 @@ Manifold Circle::visitCircle(std::shared_ptr<const Circle> _shape) const
     return Manifold(
         m_body,
         _shape->m_body,
-        contactPoint,
+        (isHit == true) ? 1 : 0,
+		{ contactPoint },
         normal,
         penetration,
         isHit
