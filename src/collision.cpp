@@ -1,5 +1,7 @@
 #include "collision.hpp"
 
+#include "util.hpp"
+
 #include <algorithm>
 #include <iostream>
 
@@ -7,7 +9,26 @@
 
 Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::shared_ptr<const Circle> _b)
 {
-	auto normal = _b->m_body->GetPosition() - _a->m_body->GetPosition();
+	// std::cout << "rotMat of 30 deg\n";
+	// float rad = 30.0f / 180.0f * std::acos(-1.0f);
+	// float2x2 rm = getRotationMatrix(rad);
+	// std::cout << rm[0][0] << ", ";
+	// std::cout << rm[1][0] << ", \n";
+	// std::cout << rm[0][1] << ", ";
+	// std::cout << rm[1][1] << ", \n";
+
+	// float2 rotVec = linalg::mul(rm, float2(1, 0));
+	// std::cout << rotVec.x << ", " << rotVec.y << "\n\n";
+
+	// do inverse rotation to treat the OBB as AABB
+	float2x2 rotationMatrix = getRotationMatrix(_a->m_body->GetOrientation());
+	
+	float2 rotatedCircleCenter = 
+		_a->m_body->GetPosition() + 
+		linalg::mul(linalg::transpose(rotationMatrix)
+		, (_b->m_body->GetPosition() - _a->m_body->GetPosition()));
+
+	auto normal = rotatedCircleCenter - _a->m_body->GetPosition();
 	auto closest = normal;
 
 	float x_half_extent = _a->m_extent.x / 2.0f;
@@ -49,17 +70,20 @@ Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const AABB> _a, std::
 	}
 
 	// if inside, d < r
-	normal = linalg::normalize(normal);
-
 	d = std::sqrt(d);
 
 	normal = (inside == true) ? -normal : normal;
 	float penetration = (inside == true) ? r + d : r - d;
+	// transform the data back to world space
+	normal = linalg::mul(rotationMatrix, normal);
+	normal = linalg::normalize(normal);
+
+	float2 contactPoint = (inside == true) ? _b->m_body->GetPosition() : _b->m_body->GetPosition() - _b->m_radius * normal;
 
 	return Manifold(
 		_a->m_body,
 		_b->m_body,
-		(inside == true) ? _b->m_body->GetPosition() : _b->m_body->GetPosition() - _b->m_radius * normal,
+		contactPoint,
 		normal,
 		penetration,
 		isHit

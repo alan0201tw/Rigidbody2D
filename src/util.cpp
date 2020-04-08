@@ -14,7 +14,7 @@ float safe_distance(float2 a, float2 b)
 
 float radianToDegree(float radian)
 {
-    return radian / acos(-1.0f) * 180.0f;
+    return radian / std::acos(-1.0f) * 180.0f;
 }
 
 float2x2 getRotationMatrix(float radian)
@@ -22,10 +22,15 @@ float2x2 getRotationMatrix(float radian)
     const float c = std::cos(radian);
     const float s = std::sin(radian);
 
+    // the matrices in linalg are column major
+    /**
+     *  M00 = cos M10 = -sin
+     *  M01 = sin M11 =  cos
+     */
     float2x2 result;
     result[0][0] = c;
-    result[0][1] = -s;
-    result[1][0] = s;
+    result[0][1] = s;
+    result[1][0] = -s;
     result[1][1] = c;
 
     return result;
