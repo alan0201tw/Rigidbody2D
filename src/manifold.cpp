@@ -67,7 +67,7 @@ void Manifold::Resolve() const
             + ( rbCrossN * rbCrossN ) * inv_inertia_b;
 
         float j = -(1.0f + e) * velAlongNormal;
-        j /= invMassSum;
+        j /= (invMassSum * (float)m_contactPointCount);
         
         // Apply impulse
         float2 impulse = m_normal * j;
@@ -93,7 +93,7 @@ void Manifold::Resolve() const
 
         // Solve for magnitude to apply along the friction vector
         float jt = -1.0f * linalg::dot( rv_after_impulse, tangent );
-        jt /= invMassSum;
+        jt /= (invMassSum * (float)m_contactPointCount);
 
         // Don't apply tiny friction impulses
         if(std::abs(jt) < 0.0001f)
