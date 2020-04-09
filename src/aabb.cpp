@@ -51,6 +51,8 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
     // rotate B to make A an AABB, check if any vertices of B is inside A
     // then, rotate A to make A an AABB, check if any vertices of A is inside B
 
+    // TODO : check if any manifolds have "roughly" same normal
+    // if yes, they should be forming a face that collides
     std::array<float2, 2> contactPoints;
 
     Manifold manifold0 = isVertexOfBInsideA(shared_from_this(), _shape);
