@@ -46,44 +46,59 @@ Manifold AABB::accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) con
     return visitor->visitAABB(shared_from_this());
 }
 
-Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
+static bool isCloseEnough(float2 dir0, float2 dir1)
 {
-    // rotate B to make A an AABB, check if any vertices of B is inside A
-    // then, rotate A to make A an AABB, check if any vertices of A is inside B
-
-    // TODO : check if any manifolds have "roughly" same normal
-    // if yes, they should be forming a face that collides
-    std::array<float2, 2> contactPoints;
-
-    Manifold manifold0 = isVertexOfBInsideA(shared_from_this(), _shape);
-    Manifold manifold1 = isVertexOfBInsideA(_shape, shared_from_this());
-    if(manifold0.m_isHit == true && manifold1.m_isHit == true)
-    {
-        for(int i = 0; i < manifold1.m_contactPointCount; ++i)
-        {
-            manifold0.m_contactPoints[manifold0.m_contactPointCount] = 
-                manifold1.m_contactPoints[i];
-            ++manifold0.m_contactPointCount;
-
-            // if(manifold0.m_contactPointCount > 1)
-            //     std::cout << "manifold0.m_contactPointCount = " << manifold0.m_contactPointCount << "\n";
-        }
-        if(manifold0.m_contactPointCount != 0)
-            manifold0.m_penetration /= manifold0.m_contactPointCount;
-
-        return manifold0;
-    }
-    else if(manifold0.m_isHit == true && manifold1.m_isHit == false)
-    {
-        return manifold0;
-    }
-    else
-    {
-        return manifold1;
-    }
+	return linalg::angle(dir0, dir1) < 0.1f;
 }
 
-Manifold AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, std::shared_ptr<const AABB> _b)
+Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
+{
+	// rotate B to make A an AABB, check if any vertices of B is inside A
+	// then, rotate A to make A an AABB, check if any vertices of A is inside B
+
+	// TODO : check if any manifolds have "roughly" same normal
+	// if yes, they should be forming a face that collides
+	std::vector<Manifold> manifolds;
+	{
+		std::vector<Manifold> manifolds0 = isVertexOfBInsideA(shared_from_this(), _shape);
+		std::vector<Manifold> manifolds1 = isVertexOfBInsideA(_shape, shared_from_this());
+
+		manifolds.reserve(manifolds0.size() + manifolds1.size()); // preallocate memory
+		manifolds.insert(manifolds.end(), manifolds0.begin(), manifolds0.end());
+		manifolds.insert(manifolds.end(), manifolds1.begin(), manifolds1.end());
+	}
+	// find if any manifold shares the same ( or similar ) normal vector
+	float leastPenetration = 1e9f;
+	Manifold* leastPenetrationManifold = new Manifold(
+		m_body, _shape->m_body, 0, {}, float2(0, 0), 0.0f, false);
+
+	for (int idx = 0; idx < manifolds.size(); ++idx)
+	{
+		if (manifolds[idx].m_penetration < leastPenetration)
+		{
+			leastPenetrationManifold = &manifolds[idx];
+			leastPenetration = manifolds[idx].m_penetration;
+		}
+
+		for (int oidx = idx + 1; oidx < manifolds.size(); ++oidx)
+		{
+			if (isCloseEnough(manifolds[idx].m_normal, manifolds[oidx].m_normal)
+				|| isCloseEnough(manifolds[idx].m_normal, -1.0f * manifolds[oidx].m_normal))
+			{
+				manifolds[idx].m_contactPoints[manifolds[idx].m_contactPointCount] =
+					manifolds[oidx].m_contactPoints[0];
+
+				++manifolds[idx].m_contactPointCount;
+				manifolds[idx].m_penetration /= manifolds[idx].m_contactPointCount;
+				return manifolds[idx];
+			}
+		}
+	}
+
+	return *leastPenetrationManifold;
+}
+
+std::vector<Manifold> AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, std::shared_ptr<const AABB> _b)
 {
     float rotationDifference = 
         _b->m_body->GetOrientation() - _a->m_body->GetOrientation();
@@ -111,15 +126,7 @@ Manifold AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, std::shared_pt
         rotatedBPosition + linalg::mul(rotationMatrixDiff, float2(-b_extent_x, -b_extent_y))
     };
 
-    Manifold manifold = Manifold(
-            _a->m_body,
-            _b->m_body,
-            0,
-            { },
-            float2(0, 0),
-            0.0f,
-            false
-        );
+	std::vector<Manifold> manifolds;
 
     for(int i = 0; i < 4; ++i)
     {
@@ -155,34 +162,19 @@ Manifold AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, std::shared_pt
                 _a->m_body->GetPosition()
                 + linalg::mul(rotationMatrix, (vertexPos - _a->m_body->GetPosition()));
 
-            if(manifold.m_isHit == false)
-            {
-                manifold = Manifold(
-                    _a->m_body,
-                    _b->m_body,
-                    1,
-                    { contactPoint },
-                    worldNormal,
-                    penetration,
-                    true
-                );
-            }
-            else if(worldNormal == manifold.m_normal)
-            {
-                // std::cout << "manifold normal = " 
-                //     << manifold.m_normal.x << ", " << manifold.m_normal.y << "\n";
-                // std::cout << "normal = " 
-                //     << worldNormal.x << ", " << worldNormal.y << "\n";
-
-                manifold.m_contactPoints[manifold.m_contactPointCount] = contactPoint;
-                ++manifold.m_contactPointCount;
-            }
+			manifolds.emplace_back(
+                _a->m_body,
+                _b->m_body,
+                1,
+                std::array<float2, 2>{ contactPoint },
+                worldNormal,
+                penetration,
+                true
+            );
         }
     }
-    if(manifold.m_contactPointCount != 0)
-        manifold.m_penetration /= manifold.m_contactPointCount;
 
-    return manifold;
+    return manifolds;
 }
 
 Manifold AABB::visitCircle(std::shared_ptr<const Circle> _shape) const
