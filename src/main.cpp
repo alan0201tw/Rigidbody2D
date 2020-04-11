@@ -26,8 +26,8 @@ namespace
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);
 
-    auto integrator = std::make_shared<RungeKuttaFourthIntegrator>();
-    //std::make_shared<ExplicitEulerIntegrator>();
+    auto integrator = //std::make_shared<RungeKuttaFourthIntegrator>();
+		std::make_shared<ExplicitEulerIntegrator>();
     // std::make_shared<NewtonIntegrator>()
     // std::make_shared<RungeKuttaFourthIntegrator>()
 
@@ -159,12 +159,6 @@ int main(int argc, char* argv[])
     // We need you to practice on designing the loop itself,
     // resolving the different update rate of physics and rendering.
 
-    auto rk4 = std::dynamic_pointer_cast<RungeKuttaFourthIntegrator>(integrator);
-    if(rk4)
-    {
-		rk4->scene = scene;
-    }
-
     // fill in the scene
     // floor
     {
@@ -267,7 +261,7 @@ int main(int argc, char* argv[])
         for(size_t i = 1; i < box_size; i++)
         {
             std::shared_ptr<DistanceJoint> disJoint = 
-                std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i], rest_length * 3.0f);
+                std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i], rest_length * 3.0f, deltaTime);
             scene->AddJoint(disJoint);
         }
     }

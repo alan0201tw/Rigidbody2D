@@ -44,13 +44,14 @@ class DistanceJoint : public Joint
 private:
     std::shared_ptr<RigidBody2D> m_body0, m_body1;
     float m_restLength;
+	float m_deltaTime;
 
 public:
     explicit DistanceJoint(
         std::shared_ptr<RigidBody2D> _body0, 
         std::shared_ptr<RigidBody2D> _body1, 
-        float _restLength)
-        : m_body0(_body0), m_body1(_body1), m_restLength(_restLength)
+        float _restLength, float _deltaTime)
+        : m_body0(_body0), m_body1(_body1), m_restLength(_restLength), m_deltaTime(_deltaTime)
         {}
     
     virtual void ApplyConstriant() const override;

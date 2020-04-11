@@ -64,7 +64,8 @@ void DistanceJoint::ApplyConstriant() const
         linalg::dot(m_body1->GetVelocity() - m_body0->GetVelocity(), unit_axis);
     const float relDist = distance - m_restLength;
 
-    const float remove = relVel + relDist / 0.001f;
+	// 0.001f need to be larger than deltaTime
+    const float remove = relVel + relDist / m_deltaTime;
     const float impulse_scalar = remove / (m_body0->GetInvMass() + m_body1->GetInvMass());
 
     const float2 impulse = impulse_scalar * unit_axis;

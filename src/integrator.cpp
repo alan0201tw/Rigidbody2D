@@ -68,19 +68,6 @@ void NewtonIntegrator::Integrate(const std::vector<BodyRef>& _bodies, float delt
 
 void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, float deltaTime)
 {
-	if (scene == nullptr)
-	{
-		throw std::runtime_error("RungeKuttaFourthIntegrator has no target scene.");
-	}
-
-	//// this stores the absolute value of position and velocity
-	//StateStep currentState[_bodies.size()];
-	//// below four arrays store the delta value of each state
-	//StateStep deltaK1State[_bodies.size()];
-	//StateStep deltaK2State[_bodies.size()];
-	//StateStep deltaK3State[_bodies.size()];
-	//StateStep deltaK4State[_bodies.size()];
-
 	// this stores the absolute value of position and velocity
 	std::vector<StateStep> currentState(_bodies.size());
 	// below four arrays store the delta value of each state
@@ -88,19 +75,6 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 	std::vector<StateStep> deltaK2State(_bodies.size());
 	std::vector<StateStep> deltaK3State(_bodies.size());
 	std::vector<StateStep> deltaK4State(_bodies.size());
-
-	// when using vectors
-	// currentState.reserve(_bodies.size());
-	// k1State.reserve(_bodies.size());
-	// k2State.reserve(_bodies.size());
-	// k3State.reserve(_bodies.size());
-	// k4State.reserve(_bodies.size());
-
-	// use this temprorary ExplicitEulerIntegrator to do the integration
-	// required in RK4
-	const auto originalIntegrator = scene->m_integrator;
-	const auto originalDeltaTime = scene->m_deltaTime;
-	scene->m_integrator = std::make_shared<ExplicitEulerIntegrator>();
 
 	const float2 gravity(0.0f, -9.8f);
 
@@ -111,10 +85,9 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 
 		currentState[i].position = _bodies[i]->GetPosition();
 		currentState[i].velocity = _bodies[i]->GetVelocity();
+		currentState[i].orientation = _bodies[i]->GetOrientation();
+		currentState[i].angularVelocity = _bodies[i]->GetAngularVelocity();
 	}
-
-	scene->m_deltaTime = originalDeltaTime;
-	//scene->Step();
 
 	for (size_t i = 0; i < _bodies.size(); i++)
 	{
@@ -122,16 +95,19 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 			continue;
 
 		const float2 acceleration = gravity + _bodies[i]->GetForce() * _bodies[i]->GetInvMass();
+		const float angularAcc = _bodies[i]->GetTorque() * _bodies[i]->GetInvInertia();
 
-		deltaK1State[i].velocity = acceleration * scene->m_deltaTime;
-		deltaK1State[i].position = _bodies[i]->GetVelocity() * scene->m_deltaTime;
+		deltaK1State[i].velocity = acceleration * deltaTime;
+		deltaK1State[i].position = _bodies[i]->GetVelocity() * deltaTime;
+		deltaK1State[i].angularVelocity = angularAcc * deltaTime;
+		deltaK1State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
 		_bodies[i]->AddVelocity(deltaK1State[i].velocity * 0.5f);
 		_bodies[i]->AddPosition(deltaK1State[i].position * 0.5f);
-	}
 
-	scene->m_deltaTime = originalDeltaTime * 0.5f;
-	//scene->Step();
+		_bodies[i]->AddAngularVelocity(deltaK1State[i].angularVelocity * 0.5f);
+		_bodies[i]->AddOrientation(deltaK1State[i].orientation * 0.5f);
+	}
 
 	for (size_t i = 0; i < _bodies.size(); i++)
 	{
@@ -139,16 +115,19 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 			continue;
 
 		const float2 acceleration = gravity + _bodies[i]->GetForce() * _bodies[i]->GetInvMass();
+		const float angularAcc = _bodies[i]->GetTorque() * _bodies[i]->GetInvInertia();
 
-		deltaK2State[i].velocity = acceleration * scene->m_deltaTime;
-		deltaK2State[i].position = _bodies[i]->GetVelocity() * scene->m_deltaTime;
+		deltaK2State[i].velocity = acceleration * deltaTime;
+		deltaK2State[i].position = _bodies[i]->GetVelocity() * deltaTime;
+		deltaK2State[i].angularVelocity = angularAcc * deltaTime;
+		deltaK2State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
 		_bodies[i]->AddVelocity(deltaK2State[i].velocity * 0.5f);
 		_bodies[i]->AddPosition(deltaK2State[i].position * 0.5f);
-	}
 
-	scene->m_deltaTime = originalDeltaTime * 0.5f;
-	//scene->Step();
+		_bodies[i]->AddAngularVelocity(deltaK2State[i].angularVelocity * 0.5f);
+		_bodies[i]->AddOrientation(deltaK2State[i].orientation * 0.5f);
+	}
 
 	for (size_t i = 0; i < _bodies.size(); i++)
 	{
@@ -156,16 +135,18 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 			continue;
 
 		const float2 acceleration = gravity + _bodies[i]->GetForce() * _bodies[i]->GetInvMass();
+		const float angularAcc = _bodies[i]->GetTorque() * _bodies[i]->GetInvInertia();
 
-		deltaK3State[i].velocity = acceleration * scene->m_deltaTime;
-		deltaK3State[i].position = _bodies[i]->GetVelocity() * scene->m_deltaTime;
+		deltaK3State[i].velocity = acceleration * deltaTime;
+		deltaK3State[i].position = _bodies[i]->GetVelocity() * deltaTime;
+		deltaK3State[i].angularVelocity = angularAcc * deltaTime;
+		deltaK3State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
 		_bodies[i]->AddVelocity(deltaK3State[i].velocity);
 		_bodies[i]->AddPosition(deltaK3State[i].position);
+		_bodies[i]->AddAngularVelocity(deltaK3State[i].angularVelocity * 0.5f);
+		_bodies[i]->AddOrientation(deltaK3State[i].orientation * 0.5f);
 	}
-
-	scene->m_deltaTime = originalDeltaTime;
-	//scene->Step();
 
 	for (size_t i = 0; i < _bodies.size(); i++)
 	{
@@ -173,9 +154,12 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 			continue;
 
 		const float2 acceleration = gravity + _bodies[i]->GetForce() * _bodies[i]->GetInvMass();
+		const float angularAcc = _bodies[i]->GetTorque() * _bodies[i]->GetInvInertia();
 
-		deltaK4State[i].velocity = acceleration * scene->m_deltaTime;
-		deltaK4State[i].position = _bodies[i]->GetVelocity() * scene->m_deltaTime;
+		deltaK4State[i].velocity = acceleration * deltaTime;
+		deltaK4State[i].position = _bodies[i]->GetVelocity() * deltaTime;
+		deltaK4State[i].angularVelocity = angularAcc * deltaTime;
+		deltaK4State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 	}
 
 	// final integration
@@ -194,13 +178,17 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 				2.0f * deltaK3State[i].velocity + deltaK4State[i].velocity) / 6.0f;
 		_bodies[i]->SetVelocity(currentState[i].velocity + deltaVel);
 
-		// add gravity
-		// _bodies[i]->AddVelocity(deltaTime * float2(0, -9.8f));
+		float deltaOri =
+			(deltaK1State[i].orientation + 2.0f * deltaK2State[i].orientation +
+				2.0f * deltaK3State[i].orientation + deltaK4State[i].orientation) / 6.0f;
+		_bodies[i]->SetOrientation(currentState[i].orientation + deltaOri);
+
+		float deltaAngVel =
+			(deltaK1State[i].angularVelocity + 2.0f * deltaK2State[i].angularVelocity +
+				2.0f * deltaK3State[i].angularVelocity + deltaK4State[i].angularVelocity) / 6.0f;
+		_bodies[i]->SetAngularVelocity(currentState[i].angularVelocity + deltaAngVel);
 
 		_bodies[i]->SetForce(float2(0, 0));
+		_bodies[i]->SetTorque(0.0f);
 	}
-
-	// clean up, restore the members
-	scene->m_integrator = originalIntegrator;
-	scene->m_deltaTime = originalDeltaTime;
 }

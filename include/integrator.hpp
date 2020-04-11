@@ -31,16 +31,15 @@ public:
 class RungeKuttaFourthIntegrator : public Integrator
 {
 private:
-    friend class Scene;
-    
     struct StateStep
     {
         float2 position;
         float2 velocity;
+
+		float orientation;
+		float angularVelocity;
     };
 
 public:
-    std::shared_ptr<Scene> scene;
-
     virtual void Integrate(const std::vector<BodyRef>& _bodies, float deltaTime) override;
 };
