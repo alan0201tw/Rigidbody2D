@@ -63,39 +63,44 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
 		std::vector<Manifold> manifolds0 = isVertexOfBInsideA(shared_from_this(), _shape);
 		std::vector<Manifold> manifolds1 = isVertexOfBInsideA(_shape, shared_from_this());
 
+        for (size_t idx = 0; idx < manifolds1.size(); ++idx)
+        {
+            std::swap(manifolds1[idx].m_body0, manifolds1[idx].m_body1);
+            manifolds1[idx].m_normal *= -1.0f;
+        }
+
 		manifolds.reserve(manifolds0.size() + manifolds1.size()); // preallocate memory
 		manifolds.insert(manifolds.end(), manifolds0.begin(), manifolds0.end());
 		manifolds.insert(manifolds.end(), manifolds1.begin(), manifolds1.end());
 	}
 	// find if any manifold shares the same ( or similar ) normal vector
 	float leastPenetration = 1e9f;
-	Manifold* leastPenetrationManifold = new Manifold(
+	Manifold leastPenetrationManifold = Manifold(
 		m_body, _shape->m_body, 0, {}, float2(0, 0), 0.0f, false);
 
-	for (int idx = 0; idx < manifolds.size(); ++idx)
+	for (size_t idx = 0; idx < manifolds.size(); ++idx)
 	{
 		if (manifolds[idx].m_penetration < leastPenetration)
 		{
-			leastPenetrationManifold = &manifolds[idx];
+			leastPenetrationManifold = manifolds[idx];
 			leastPenetration = manifolds[idx].m_penetration;
 		}
-
-		for (int oidx = idx + 1; oidx < manifolds.size(); ++oidx)
+        
+		for (size_t oidx = idx + 1; oidx < manifolds.size(); ++oidx)
 		{
-			if (isCloseEnough(manifolds[idx].m_normal, manifolds[oidx].m_normal)
-				|| isCloseEnough(manifolds[idx].m_normal, -1.0f * manifolds[oidx].m_normal))
+			if (isCloseEnough(manifolds[idx].m_normal, manifolds[oidx].m_normal))
 			{
 				manifolds[idx].m_contactPoints[manifolds[idx].m_contactPointCount] =
 					manifolds[oidx].m_contactPoints[0];
 
 				++manifolds[idx].m_contactPointCount;
-				manifolds[idx].m_penetration /= manifolds[idx].m_contactPointCount;
+				// manifolds[idx].m_penetration /= manifolds[idx].m_contactPointCount;
 				return manifolds[idx];
 			}
 		}
 	}
 
-	return *leastPenetrationManifold;
+	return leastPenetrationManifold;
 }
 
 std::vector<Manifold> AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, std::shared_ptr<const AABB> _b)
@@ -148,12 +153,12 @@ std::vector<Manifold> AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, s
             if( distanceToBoundaryY > distanceToBoundaryX )
             {
                 delta = (delta.x < 0.0f) ? float2(-1, 0) : float2(1, 0);
-                penetration = std::min( maxPosA.x - vertexPos.x , vertexPos.x - minPosA.x );
+                penetration = (delta.x < 0.0f) ? vertexPos.x - minPosA.x : maxPosA.x - vertexPos.x;
             }
             else
             {
                 delta = (delta.y < 0.0f) ? float2(0, -1) : float2(0, 1);
-                penetration = std::min( maxPosA.y - vertexPos.y , vertexPos.y - minPosA.y );
+                penetration = (delta.y < 0.0f) ? vertexPos.y - minPosA.y : maxPosA.y - vertexPos.y;
             }
 
             worldNormal = safe_normalize(linalg::mul(rotationMatrix, delta));
