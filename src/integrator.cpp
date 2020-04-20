@@ -113,7 +113,6 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		_bodies[i]->SetTorque(0.0f);
 	}
 
-	scene->m_deltaTime = deltaTime / 2.0f;
 	scene->Solve();
 
 	for (size_t i = 0; i < _bodies.size(); i++)
@@ -138,7 +137,6 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		_bodies[i]->SetTorque(0.0f);
 	}
 
-	scene->m_deltaTime = deltaTime / 2.0f;
 	scene->Solve();
 
 	for (size_t i = 0; i < _bodies.size(); i++)
@@ -154,10 +152,10 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		deltaK3State[i].angularVelocity = angularAcc * scene->m_deltaTime;
 		deltaK3State[i].orientation = _bodies[i]->GetAngularVelocity() * scene->m_deltaTime;
 
-		_bodies[i]->SetVelocity(currentState[i].velocity + deltaK3State[i].velocity * 0.5f);
-		_bodies[i]->SetPosition(currentState[i].position + deltaK3State[i].position * 0.5f);
-		_bodies[i]->SetAngularVelocity(currentState[i].angularVelocity + deltaK3State[i].angularVelocity * 0.5f);
-		_bodies[i]->SetOrientation(currentState[i].orientation + deltaK3State[i].orientation * 0.5f);
+		_bodies[i]->SetVelocity(currentState[i].velocity + deltaK3State[i].velocity);
+		_bodies[i]->SetPosition(currentState[i].position + deltaK3State[i].position);
+		_bodies[i]->SetAngularVelocity(currentState[i].angularVelocity + deltaK3State[i].angularVelocity);
+		_bodies[i]->SetOrientation(currentState[i].orientation + deltaK3State[i].orientation);
 
 		_bodies[i]->SetForce(float2(0.0f, 0.0f));
 		_bodies[i]->SetTorque(0.0f);
