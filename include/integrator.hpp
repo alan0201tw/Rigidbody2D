@@ -41,5 +41,6 @@ private:
     };
 
 public:
+	std::shared_ptr<Scene> scene;
     virtual void Integrate(const std::vector<BodyRef>& _bodies, float deltaTime) override;
 };

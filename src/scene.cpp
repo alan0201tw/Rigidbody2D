@@ -10,45 +10,55 @@
 
 void Scene::Step() const
 {
-    // First : Generate manifolds
-    for(size_t i = 0; i < m_bodies.size(); i++)
-    {
-        for(size_t j = i + 1; j < m_bodies.size(); j++)
-        {
-            Manifold manifold = 
-                m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
+	Solve();
+	Integrate();
+}
 
-            // put the manifold into resolve queue only if it's a hit
-            if(manifold.m_isHit == true)
-                m_manifolds.push_back(manifold);
-        }
-    }
+void Scene::Solve() const
+{
+	// First : Generate manifolds
+	for (size_t i = 0; i < m_bodies.size(); i++)
+	{
+		for (size_t j = i + 1; j < m_bodies.size(); j++)
+		{
+			Manifold manifold =
+				m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
 
-    // Then : Resolve impulses by manifolds
-    for(size_t iteration = 0; iteration < m_iterations; iteration++)
-    {
-        for(size_t i = 0; i < m_manifolds.size(); i++)
-        {
-            m_manifolds[i].Resolve();
-        }
-    }
-    // integrate
-    m_integrator->Integrate(m_bodies, m_deltaTime);
+			// put the manifold into resolve queue only if it's a hit
+			if (manifold.m_isHit == true)
+				m_manifolds.push_back(manifold);
+		}
+	}
 
-    // Then : Do positional correction
-    for(size_t i = 0; i < m_manifolds.size(); i++)
-    {
-        m_manifolds[i].PositionalCorrection();
-    }
+	// Then : Resolve impulses by manifolds
+	for (size_t iteration = 0; iteration < m_iterations; iteration++)
+	{
+		for (size_t i = 0; i < m_manifolds.size(); i++)
+		{
+			m_manifolds[i].Resolve();
+		}
+	}
 
-    // Preprocess : apply joint constraint
-    for(size_t i = 0; i < m_joints.size(); i++)
-    {
-        m_joints[i]->ApplyConstriant();
-    }
+	// Then : Do positional correction
+	for (size_t i = 0; i < m_manifolds.size(); i++)
+	{
+		m_manifolds[i].PositionalCorrection();
+	}
 
-    // Remember to clear the manifolds
-    m_manifolds.clear();
+	// Preprocess : apply joint constraint
+	for (size_t i = 0; i < m_joints.size(); i++)
+	{
+		m_joints[i]->ApplyConstriant();
+	}
+
+	// Remember to clear the manifolds
+	m_manifolds.clear();
+}
+
+void Scene::Integrate() const
+{
+	// integrate
+	m_integrator->Integrate(m_bodies, m_deltaTime);
 }
 
 void Scene::Render() const

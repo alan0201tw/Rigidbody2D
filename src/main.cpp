@@ -159,6 +159,12 @@ int main(int argc, char* argv[])
     // We need you to practice on designing the loop itself,
     // resolving the different update rate of physics and rendering.
 
+	auto rk4 = std::dynamic_pointer_cast<RungeKuttaFourthIntegrator>(integrator);
+	if (rk4 != nullptr)
+	{
+		rk4->scene = scene;
+	}
+
     // fill in the scene
     // floor
     {

@@ -31,6 +31,8 @@ public:
           {}
 
     void Step() const;
+	void Solve() const;
+	void Integrate() const;
     void Render() const;
     // for a given shape, create a rigidbody and return it for further operation
     std::shared_ptr<RigidBody2D> AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position);
