@@ -102,8 +102,10 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		deltaK1State[i].angularVelocity = angularAcc * deltaTime;
 		deltaK1State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
-		_bodies[i]->AddVelocity(deltaK1State[i].velocity * 0.5f);
-		_bodies[i]->AddPosition(deltaK1State[i].position * 0.5f);
+		//_bodies[i]->AddVelocity(deltaK1State[i].velocity * 0.5f);
+		//_bodies[i]->AddPosition(deltaK1State[i].position * 0.5f);
+		_bodies[i]->SetVelocity(currentState[i].velocity + deltaK1State[i].velocity * 0.5f);
+		_bodies[i]->SetPosition(currentState[i].position + deltaK1State[i].position * 0.5f);
 
 		_bodies[i]->AddAngularVelocity(deltaK1State[i].angularVelocity * 0.5f);
 		_bodies[i]->AddOrientation(deltaK1State[i].orientation * 0.5f);
@@ -122,8 +124,10 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		deltaK2State[i].angularVelocity = angularAcc * deltaTime;
 		deltaK2State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
-		_bodies[i]->AddVelocity(deltaK2State[i].velocity * 0.5f);
-		_bodies[i]->AddPosition(deltaK2State[i].position * 0.5f);
+		//_bodies[i]->AddVelocity(deltaK2State[i].velocity * 0.5f);
+		//_bodies[i]->AddPosition(deltaK2State[i].position * 0.5f);
+		_bodies[i]->SetVelocity(currentState[i].velocity + deltaK2State[i].velocity * 0.5f);
+		_bodies[i]->SetPosition(currentState[i].position + deltaK2State[i].position * 0.5f);
 
 		_bodies[i]->AddAngularVelocity(deltaK2State[i].angularVelocity * 0.5f);
 		_bodies[i]->AddOrientation(deltaK2State[i].orientation * 0.5f);
@@ -142,8 +146,10 @@ void RungeKuttaFourthIntegrator::Integrate(const std::vector<BodyRef>& _bodies, 
 		deltaK3State[i].angularVelocity = angularAcc * deltaTime;
 		deltaK3State[i].orientation = _bodies[i]->GetAngularVelocity() * deltaTime;
 
-		_bodies[i]->AddVelocity(deltaK3State[i].velocity);
-		_bodies[i]->AddPosition(deltaK3State[i].position);
+		//_bodies[i]->AddVelocity(deltaK3State[i].velocity);
+		//_bodies[i]->AddPosition(deltaK3State[i].position);
+		_bodies[i]->SetVelocity(currentState[i].velocity + deltaK3State[i].velocity * 0.5f);
+		_bodies[i]->SetPosition(currentState[i].position + deltaK3State[i].position * 0.5f);
 		_bodies[i]->AddAngularVelocity(deltaK3State[i].angularVelocity * 0.5f);
 		_bodies[i]->AddOrientation(deltaK3State[i].orientation * 0.5f);
 	}
