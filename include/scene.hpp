@@ -7,7 +7,7 @@
 #include "integrator.hpp"
 #include "manifold.hpp"
 
-class Scene
+class Scene : public std::enable_shared_from_this<Scene>
 {
     typedef linalg::aliases::float2 float2;
 private:
@@ -30,9 +30,9 @@ public:
           m_manifolds(), m_integrator(_integrator)
           {}
 
-    void Step() const;
-	void Solve() const;
-	void Integrate() const;
+    void Step();
+	void Solve();
+	void Integrate();
     void Render() const;
     // for a given shape, create a rigidbody and return it for further operation
     std::shared_ptr<RigidBody2D> AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position);
@@ -40,5 +40,7 @@ public:
 
     // the private here is purely for syntax, it does not affect the friend statement
 private:
+	friend class ExplicitEulerIntegrator;
+	friend class NewtonIntegrator;
     friend class RungeKuttaFourthIntegrator;
 };

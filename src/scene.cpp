@@ -8,13 +8,13 @@
 
 #include <iostream>
 
-void Scene::Step() const
+void Scene::Step()
 {
 	Solve();
 	Integrate();
 }
 
-void Scene::Solve() const
+void Scene::Solve()
 {
 	// First : Generate manifolds
 	for (size_t i = 0; i < m_bodies.size(); i++)
@@ -55,10 +55,10 @@ void Scene::Solve() const
 	m_manifolds.clear();
 }
 
-void Scene::Integrate() const
+void Scene::Integrate()
 {
 	// integrate
-	m_integrator->Integrate(m_bodies, m_deltaTime);
+	m_integrator->Integrate(shared_from_this());
 }
 
 void Scene::Render() const
