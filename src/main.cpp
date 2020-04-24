@@ -17,7 +17,7 @@
 
 namespace
 {
-    const float deltaTime = 1.0f / 30.0f;
+    const float deltaTime = 1.0f / 60.0f;
     const uint32_t positional_correction_iterations = 10;
     const float accumulate_upper_bound = 
         std::max(deltaTime, 0.1f);

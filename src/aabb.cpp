@@ -63,11 +63,11 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
 		std::vector<Manifold> manifolds0 = isVertexOfBInsideA(shared_from_this(), _shape);
 		std::vector<Manifold> manifolds1 = isVertexOfBInsideA(_shape, shared_from_this());
 
-        for (size_t idx = 0; idx < manifolds1.size(); ++idx)
-        {
-            std::swap(manifolds1[idx].m_body0, manifolds1[idx].m_body1);
-            manifolds1[idx].m_normal *= -1.0f;
-        }
+		for (size_t idx = 0; idx < manifolds1.size(); ++idx)
+		{
+			std::swap(manifolds1[idx].m_body0, manifolds1[idx].m_body1);
+			manifolds1[idx].m_normal *= -1.0f;
+		}
 
 		manifolds.reserve(manifolds0.size() + manifolds1.size()); // preallocate memory
 		manifolds.insert(manifolds.end(), manifolds0.begin(), manifolds0.end());
@@ -85,7 +85,7 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
 			leastPenetrationManifold = manifolds[idx];
 			leastPenetration = manifolds[idx].m_penetration;
 		}
-        
+
 		for (size_t oidx = idx + 1; oidx < manifolds.size(); ++oidx)
 		{
 			if (isCloseEnough(manifolds[idx].m_normal, manifolds[oidx].m_normal))
@@ -94,7 +94,7 @@ Manifold AABB::visitAABB(std::shared_ptr<const AABB> _shape) const
 					manifolds[oidx].m_contactPoints[0];
 
 				++manifolds[idx].m_contactPointCount;
-				// manifolds[idx].m_penetration /= manifolds[idx].m_contactPointCount;
+				manifolds[idx].m_penetration /= manifolds[idx].m_contactPointCount;
 				return manifolds[idx];
 			}
 		}
@@ -146,7 +146,7 @@ std::vector<Manifold> AABB::isVertexOfBInsideA(std::shared_ptr<const AABB> _a, s
             float distanceToBoundaryX = std::min( maxPosA.x - vertexPos.x , vertexPos.x - minPosA.x );
             float distanceToBoundaryY = std::min( maxPosA.y - vertexPos.y , vertexPos.y - minPosA.y );
             
-            float penetration = -1.0f;
+            float penetration;
             float2 delta = vertexPos - _a->m_body->GetPosition();
             float2 worldNormal;
 

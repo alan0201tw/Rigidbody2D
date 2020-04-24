@@ -125,7 +125,7 @@ void Manifold::Resolve() const
 
 void Manifold::PositionalCorrection() const
 {
-    const float percent = 0.4f; // usually 20% to 80%, when fps is 1/60
+    const float percent = 0.4f; // usually 20% to 80%
     const float slop = 0.01f; // usually 0.01 to 0.1
 
 	const float inv_mass_a = m_body0->GetInvMass();
