@@ -6,14 +6,14 @@
 class RigidBody2D;
 
 // here we need to forward declare all sub-classes of 'Shape'
-class AABB;
+class OBB;
 class Circle;
 
 template <typename R>
 class ShapeVisitor
 {
 public:
-    virtual R visitAABB(std::shared_ptr<const AABB> _shape) const = 0;
+    virtual R visitAABB(std::shared_ptr<const OBB> _shape) const = 0;
     virtual R visitCircle(std::shared_ptr<const Circle> _shape) const = 0;
 };
 

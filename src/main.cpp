@@ -11,7 +11,7 @@
 #include "clock.hpp"
 #include "scene.hpp"
 #include "circle.hpp"
-#include "aabb.hpp"
+#include "obb.hpp"
 #include "integrator.hpp"
 #include "joint.hpp"
 
@@ -124,7 +124,7 @@ public:
             float2 ortho_size((float)screen_width / 20.0f, (float)screen_height / 20.0f);
             float2 position = float2( (float)x / 10.0f - ortho_size.x, (float)y / -10.0f + ortho_size.y );
 
-            std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+            std::shared_ptr<OBB> shape = std::make_shared<OBB>(
                 //float2 (3, 3)
 #ifdef _MSC_VER
 				float2(((float)rand() / (RAND_MAX)) * 5 + 3, ((float)rand() / (RAND_MAX)) * 5 + 3)
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
     // fill in the scene
     // floor
     {
-        std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+        std::shared_ptr<OBB> shape = std::make_shared<OBB>(
             float2 (35.0f, 2.0f)
         );
 
@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
         body->SetOrientation(3.14f);
     }
     {
-        std::shared_ptr<AABB> shape = std::make_shared<AABB>(
+        std::shared_ptr<OBB> shape = std::make_shared<OBB>(
             float2 (5, 5)
         );
         auto body = scene->AddRigidBody(shape, float2(-5, 20));
@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
 
         for(size_t i = 0; i < box_size; i++)
         {
-            auto shape = std::make_shared<AABB>(float2 (1, 1));
+            auto shape = std::make_shared<OBB>(float2 (1, 1));
             boxes.push_back(scene->AddRigidBody(shape, 
                 float2(length * std::cos(theta), -18.0f)
             ));
@@ -243,7 +243,7 @@ int main(int argc, char* argv[])
 
         for(size_t i = 0; i < box_size; i++)
         {
-            auto shape = std::make_shared<AABB>(float2 (1, 1));
+            auto shape = std::make_shared<OBB>(float2 (1, 1));
             boxes.push_back(scene->AddRigidBody(shape, 
                 float2( -20.0f + -3.0f * i, 30 - rest_length * i)
             ));

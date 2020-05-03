@@ -1,7 +1,7 @@
 #include "circle.hpp"
 
 #include "manifold.hpp"
-#include "aabb.hpp"
+#include "obb.hpp"
 #include "collision.hpp"
 
 #include "GL/freeglut.h"
@@ -13,7 +13,7 @@ Manifold Circle::accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) c
     return visitor->visitCircle(shared_from_this());
 }
 
-Manifold Circle::visitAABB(std::shared_ptr<const AABB> _shape) const
+Manifold Circle::visitAABB(std::shared_ptr<const OBB> _shape) const
 {
     // in impulse engine, the normal is flipped ( * -1 )
     // because in that architecture, the body0 and body1 is already

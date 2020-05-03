@@ -15,7 +15,7 @@ public:
 
     virtual Manifold accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const override;
 
-    virtual Manifold visitAABB(std::shared_ptr<const AABB> _shape) const override;
+    virtual Manifold visitAABB(std::shared_ptr<const OBB> _shape) const override;
     virtual Manifold visitCircle(std::shared_ptr<const Circle> _shape) const override;
 
     virtual void Render() const override;
