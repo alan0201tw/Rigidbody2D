@@ -79,7 +79,8 @@ void Scene::Render() const
             Manifold manifold = 
                 m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
 
-            m_manifolds.push_back(manifold);
+            if(manifold.m_isHit == true)
+                m_manifolds.push_back(manifold);
         }
     }
 
