@@ -22,6 +22,12 @@ public:
     virtual void Integrate(std::shared_ptr<Scene> scene) override;
 };
 
+class SymplecticEulerIntegrator : public Integrator
+{
+public:
+	virtual void Integrate(std::shared_ptr<Scene> scene) override;
+};
+
 class NewtonIntegrator : public Integrator
 {
 public:

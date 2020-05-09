@@ -41,6 +41,7 @@ public:
     // the private here is purely for syntax, it does not affect the friend statement
 private:
 	friend class ExplicitEulerIntegrator;
+	friend class SymplecticEulerIntegrator;
 	friend class NewtonIntegrator;
     friend class RungeKuttaFourthIntegrator;
 };

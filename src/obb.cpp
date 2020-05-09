@@ -113,7 +113,7 @@ std::array<float2, 2> OBB::FindIncidentFace(
     referenceNormal = linalg::mul(invRotMatrixOfInc, referenceNormal); // To incident's model space
 
     // Find most anti-normal face on incident polygon
-    int incidentFace = 0;
+	size_t incidentFace = 0u;
     float minDot = 1e9f;
     for(size_t i = 0; i < IncPoly->GetVertexCount(); ++i)
     {
@@ -142,7 +142,7 @@ std::array<float2, 2> OBB::FindIncidentFace(
     return vertexPosArray;
 }
 
-int OBB::Clip(float2 normal, float clipped, std::array<float2, 2> face)
+size_t OBB::Clip(float2 normal, float clipped, std::array<float2, 2> face)
 {
     size_t sp = 0u;
     float2 out[2] = {

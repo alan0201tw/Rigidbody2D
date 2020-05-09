@@ -23,7 +23,8 @@ namespace
         std::max(deltaTime, 0.1f);
 
     auto integrator = 
-		std::make_shared<RungeKuttaFourthIntegrator>();
+		//std::make_shared<RungeKuttaFourthIntegrator>();
+		std::make_shared<SymplecticEulerIntegrator>();
 		//std::make_shared<ExplicitEulerIntegrator>();
 
 	auto scene = std::make_shared<Scene>(
@@ -47,17 +48,9 @@ private:
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         gluLookAt(
-        0, 0, 0,
-		0, 0, -1,
-		0, 1, 0);
-
-        // glPushMatrix();
-        // {
-        //     glTranslated(0, 0, 0);
-
-        //     glutWireTeapot(10.0);
-        // }
-        // glPopMatrix();
+			0, 0, 0,
+			0, 0, -1,
+			0, 1, 0);
 
         scene->Render();
 

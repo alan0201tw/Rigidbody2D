@@ -35,6 +35,34 @@ void ExplicitEulerIntegrator::Integrate(std::shared_ptr<Scene> scene)
     // maybe define the gravity vector in scene class.
 }
 
+
+void SymplecticEulerIntegrator::Integrate(std::shared_ptr<Scene> scene)
+{
+	// from 2009 Erin Catto http://www.gphysics.com
+	/*
+	state2->v = state1->v - h * gravity;
+	state2->x = state1->x + h * state2->v;
+	*/
+	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	{
+		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
+			continue;
+
+		scene->m_bodies[i]->AddVelocity(scene->m_deltaTime * (scene->m_bodies[i]->GetForce() / scene->m_bodies[i]->GetMass()));
+		scene->m_bodies[i]->AddVelocity(scene->m_deltaTime * float2(0, -9.8f));
+
+		scene->m_bodies[i]->AddPosition(scene->m_deltaTime * scene->m_bodies[i]->GetVelocity());
+
+		// Rotation
+		scene->m_bodies[i]->AddAngularVelocity(scene->m_deltaTime * (scene->m_bodies[i]->GetTorque() * scene->m_bodies[i]->GetInvInertia()));
+		scene->m_bodies[i]->AddOrientation(scene->m_bodies[i]->GetAngularVelocity() * scene->m_deltaTime);
+
+		scene->m_bodies[i]->SetForce(float2(0, 0));
+		scene->m_bodies[i]->SetTorque(0.0f);
+	}
+}
+
+
 void NewtonIntegrator::Integrate(std::shared_ptr<Scene> scene)
 {
     // from 2009 Erin Catto http://www.gphysics.com

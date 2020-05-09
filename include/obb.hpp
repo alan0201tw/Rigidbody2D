@@ -23,7 +23,7 @@ private:
     static std::array<float2, 2> FindIncidentFace( 
         std::shared_ptr<const OBB> RefPoly, std::shared_ptr<const OBB> IncPoly, size_t referenceIndex);
 
-    static int Clip(float2 normal, float clipped, std::array<float2, 2> face);
+    static size_t Clip(float2 normal, float clipped, std::array<float2, 2> face);
 
 public:
     OBB(float2 _extent) : m_extent(_extent) {}
