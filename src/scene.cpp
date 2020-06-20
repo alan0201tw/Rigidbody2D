@@ -17,9 +17,9 @@ void Scene::Step()
 void Scene::Solve()
 {
 	// First : Generate manifolds
-	for (size_t i = 0; i < m_bodies.size(); i++)
+	for (size_t i = 0; i < m_bodies.size(); ++i)
 	{
-		for (size_t j = i + 1; j < m_bodies.size(); j++)
+		for (size_t j = i + 1; j < m_bodies.size(); ++j)
 		{
 			Manifold manifold =
 				m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
@@ -31,22 +31,22 @@ void Scene::Solve()
 	}
 
 	// Then : Resolve impulses by manifolds
-	for (size_t iteration = 0; iteration < m_iterations; iteration++)
+	for (size_t iteration = 0; iteration < m_iterations; ++iteration)
 	{
-		for (size_t i = 0; i < m_manifolds.size(); i++)
+		for (size_t i = 0; i < m_manifolds.size(); ++i)
 		{
 			m_manifolds[i].Resolve();
 		}
 	}
 
 	// Then : Do positional correction
-	for (size_t i = 0; i < m_manifolds.size(); i++)
+	for (size_t i = 0; i < m_manifolds.size(); ++i)
 	{
 		m_manifolds[i].PositionalCorrection();
 	}
 
 	// Preprocess : apply joint constraint
-	for (size_t i = 0; i < m_joints.size(); i++)
+	for (size_t i = 0; i < m_joints.size(); ++i)
 	{
 		m_joints[i]->ApplyConstriant();
 	}
@@ -63,18 +63,18 @@ void Scene::Integrate()
 
 void Scene::Render() const
 {
-    for(size_t i = 0; i < m_bodies.size(); i++)
+    for(size_t i = 0; i < m_bodies.size(); ++i)
     {
         m_bodies[i]->GetShape()->Render();
     }
-    for(size_t i = 0; i < m_joints.size(); i++)
+    for(size_t i = 0; i < m_joints.size(); ++i)
     {
         m_joints[i]->Render();
     }
 
-    for(size_t i = 0; i < m_bodies.size(); i++)
+    for(size_t i = 0; i < m_bodies.size(); ++i)
     {
-        for(size_t j = i + 1; j < m_bodies.size(); j++)
+        for(size_t j = i + 1; j < m_bodies.size(); ++j)
         {
             Manifold manifold = 
                 m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
@@ -84,7 +84,7 @@ void Scene::Render() const
         }
     }
 
-    for(size_t i = 0; i < m_manifolds.size(); i++)
+    for(size_t i = 0; i < m_manifolds.size(); ++i)
     {
         if(m_manifolds[i].m_isHit == false)
             continue;

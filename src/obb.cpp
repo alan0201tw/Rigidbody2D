@@ -132,7 +132,7 @@ std::array<float2, 2> OBB::FindIncidentFace(
          + IncPoly->m_body->GetPosition();
 
     incidentFace = 
-        incidentFace + 1 >= (int)IncPoly->GetVertexCount() ? 
+        incidentFace + 1 >= IncPoly->GetVertexCount() ? 
         0 : incidentFace + 1;
 
     vertexPosArray[1] = 

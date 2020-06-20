@@ -11,7 +11,7 @@ void ExplicitEulerIntegrator::Integrate(std::shared_ptr<Scene> scene)
 	state2->x = state1->x + h * state1->v;
 	state2->v = state1->v - h * gravity;
     */
-    for(size_t i = 0; i < scene->m_bodies.size(); i++)
+    for(size_t i = 0; i < scene->m_bodies.size(); ++i)
     {
         if(scene->m_bodies[i]->GetInvMass() == 0.0f)
             continue;
@@ -73,7 +73,7 @@ void NewtonIntegrator::Integrate(std::shared_ptr<Scene> scene)
 
     const float2 gravity(0.0f, -9.8f);
 
-    for(size_t i = 0; i < scene->m_bodies.size(); i++)
+    for(size_t i = 0; i < scene->m_bodies.size(); ++i)
     {
         if(scene->m_bodies[i]->GetInvMass() == 0.0f)
             continue;
@@ -106,7 +106,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 
 	const float2 gravity(0.0f, -9.8f);
 
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;
@@ -119,7 +119,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 
 	scene->Solve();
 
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;
@@ -143,7 +143,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 
 	scene->Solve();
 
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;
@@ -167,7 +167,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 
 	scene->Solve();
 
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;
@@ -192,7 +192,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 	scene->m_deltaTime = scene->m_deltaTime;
 	scene->Solve();
 
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;
@@ -207,7 +207,7 @@ void RungeKuttaFourthIntegrator::Integrate(std::shared_ptr<Scene> scene)
 	}
 
 	// final integration
-	for (size_t i = 0; i < scene->m_bodies.size(); i++)
+	for (size_t i = 0; i < scene->m_bodies.size(); ++i)
 	{
 		if (scene->m_bodies[i]->GetInvMass() == 0.0f)
 			continue;

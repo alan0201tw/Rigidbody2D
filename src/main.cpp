@@ -203,7 +203,7 @@ int main(int argc, char* argv[])
         float theta = 0.0f;
         float deltaTheta = (float) M_PI / (box_size - 1);
 
-        for(size_t i = 0; i < box_size; i++)
+        for(size_t i = 0; i < box_size; ++i)
         {
             auto shape = std::make_shared<OBB>(float2 (1, 1));
             boxes.push_back(scene->AddRigidBody(shape, 
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
         boxes[0]->SetMass(0.0f);
         boxes[box_size - 1]->SetMass(0.0f);
 
-        for(size_t i = 1; i < box_size; i++)
+        for(size_t i = 1; i < box_size; ++i)
         {
             std::shared_ptr<SpringJoint> disJoint = 
                 std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], rest_length, 100.0f);
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
         std::vector< std::shared_ptr<RigidBody2D> > boxes;
         boxes.reserve(box_size);
 
-        for(size_t i = 0; i < box_size; i++)
+        for(size_t i = 0; i < box_size; ++i)
         {
             auto shape = std::make_shared<OBB>(float2 (1, 1));
             boxes.push_back(scene->AddRigidBody(shape, 
@@ -246,7 +246,7 @@ int main(int argc, char* argv[])
 
         boxes[0]->SetMass(0.0f);
 
-        for(size_t i = 1; i < box_size; i++)
+        for(size_t i = 1; i < box_size; ++i)
         {
             std::shared_ptr<DistanceJoint> disJoint = 
                 std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i], rest_length * 3.0f, deltaTime);
