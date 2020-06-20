@@ -30,8 +30,8 @@ namespace
 	auto scene = std::make_shared<Scene>(
 		deltaTime, positional_correction_iterations, integrator);
 
-    int screen_width = 600;
-	int screen_height = 600;
+    int screen_width = 800;
+	int screen_height = 800;
 
     typedef linalg::aliases::float2 float2;
 }

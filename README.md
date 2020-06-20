@@ -4,10 +4,9 @@ A simple 2D physics simulation with rigidbodies.
 
 Click on screen to add boxes and circles to the simulation (left and right mouse button).
 
-## Screenshots
+## Demo Video
 
-![a](./screenshots/a.png)
-![b](./screenshots/b.png)
+![gif](./gif/rgb2d.gif)
 
 ## Reference
 
