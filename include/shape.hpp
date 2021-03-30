@@ -13,8 +13,8 @@ template <typename R>
 class ShapeVisitor
 {
 public:
-    virtual R visitAABB(std::shared_ptr<const OBB> _shape) const = 0;
-    virtual R visitCircle(std::shared_ptr<const Circle> _shape) const = 0;
+    virtual R visitAABB(const std::shared_ptr<const OBB>& _shape) const = 0;
+    virtual R visitCircle(const std::shared_ptr<const Circle>& _shape) const = 0;
 };
 
 class Shape : public ShapeVisitor<Manifold>
@@ -25,7 +25,7 @@ public:
     // Here the return type of 'bool' is just a placeholder.
     // We will replace it with a data structure for storing collision data.
     // A so-called 'Manifold'.
-    virtual Manifold accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const = 0;
+    virtual Manifold accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visitor) const = 0;
 
     // Following sections are for rendering, it is more sophisticated to
     // decouple these two behaviors, but for the sake of convenience, we

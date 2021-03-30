@@ -25,7 +25,7 @@ private:
     std::shared_ptr<Integrator> m_integrator;
 
 public:
-    Scene(float _dt, uint32_t _iterations, std::shared_ptr<Integrator> _integrator) 
+    Scene(float _dt, uint32_t _iterations, const std::shared_ptr<Integrator>& _integrator) 
         : m_deltaTime(_dt), m_iterations(_iterations), m_bodies(), m_joints(),
           m_manifolds(), m_integrator(_integrator)
           {}
@@ -35,8 +35,8 @@ public:
 	void Integrate();
     void Render() const;
     // for a given shape, create a rigidbody and return it for further operation
-    std::shared_ptr<RigidBody2D> AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position);
-    void AddJoint(std::shared_ptr<Joint> _joint);
+    std::shared_ptr<RigidBody2D> AddRigidBody(const std::shared_ptr<Shape>& _shape, float2 _position);
+    void AddJoint(const std::shared_ptr<Joint>& _joint);
 
     // the private here is purely for syntax, it does not affect the friend statement
 private:

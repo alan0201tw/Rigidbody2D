@@ -27,8 +27,8 @@ private:
 
 public:
     explicit SpringJoint(
-        std::shared_ptr<RigidBody2D> _body0, 
-        std::shared_ptr<RigidBody2D> _body1, 
+        const std::shared_ptr<RigidBody2D>& _body0, 
+        const std::shared_ptr<RigidBody2D>& _body1, 
         float _restLength,
         float _stiffness)
         : m_body0(_body0), m_body1(_body1), m_restLength(_restLength)
@@ -48,8 +48,8 @@ private:
 
 public:
     explicit DistanceJoint(
-        std::shared_ptr<RigidBody2D> _body0, 
-        std::shared_ptr<RigidBody2D> _body1, 
+        const std::shared_ptr<RigidBody2D>& _body0, 
+        const std::shared_ptr<RigidBody2D>& _body1, 
         float _restLength, float _deltaTime)
         : m_body0(_body0), m_body1(_body1), m_restLength(_restLength), m_deltaTime(_deltaTime)
         {}

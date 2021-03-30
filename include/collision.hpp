@@ -16,9 +16,9 @@ class CollisionHelper
 {
 public:
     // AABB to AABB
-    static Manifold GenerateManifold(std::shared_ptr<const OBB> _a, std::shared_ptr<const OBB> _b);
+    static Manifold GenerateManifold(const std::shared_ptr<const OBB>& _a, const std::shared_ptr<const OBB>& _b);
     // AABB to Circle
-    static Manifold GenerateManifold(std::shared_ptr<const OBB> _a, std::shared_ptr<const Circle> _b);
+    static Manifold GenerateManifold(const std::shared_ptr<const OBB>& _a, const std::shared_ptr<const Circle>& _b);
     // Circle to Circle
-    static Manifold GenerateManifold(std::shared_ptr<const Circle> _a, std::shared_ptr<const Circle> _b);
+    static Manifold GenerateManifold(const std::shared_ptr<const Circle>& _a, const std::shared_ptr<const Circle>& _b);
 };

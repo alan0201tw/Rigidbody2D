@@ -79,11 +79,6 @@ public:
         RenderScene();
     }
 
-    static void Keyboard(unsigned char key, int x, int y)
-    {
-
-    }
-
     static void Reshape(int width, int height)
     {
         screen_width = width;
@@ -139,7 +134,6 @@ int main(int argc, char* argv[])
     glutInitWindowSize(screen_width, screen_height);
     glutCreateWindow("PhyEngine");
     glutDisplayFunc(GLUTCallback::MainLoop);
-    glutKeyboardFunc(GLUTCallback::Keyboard);
     glutMouseFunc(GLUTCallback::Mouse);
     glutReshapeFunc(GLUTCallback::Reshape);
 

@@ -34,7 +34,7 @@ OBB::float2 OBB::GetSupportPoint(const float2& dir) const
     return bestVertex;
 }
 
-Manifold OBB::accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const
+Manifold OBB::accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visitor) const
 {
     return visitor->visitAABB(shared_from_this());
 }
@@ -183,7 +183,7 @@ size_t OBB::Clip(float2 normal, float clipped, std::array<float2, 2> face)
 
 //////////////
 
-Manifold OBB::visitAABB(std::shared_ptr<const OBB> _shape) const
+Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
 {
     //return Manifold(m_body, _shape->m_body, 0, {}, float2(0,0), 0, false);
     Manifold dummyManifold = Manifold(m_body, _shape->m_body, 0, {}, float2(0,0), 0, false);
@@ -304,7 +304,7 @@ Manifold OBB::visitAABB(std::shared_ptr<const OBB> _shape) const
     return m;
 }
 
-Manifold OBB::visitCircle(std::shared_ptr<const Circle> _shape) const
+Manifold OBB::visitCircle(const std::shared_ptr<const Circle>& _shape) const
 {
     auto manifold = CollisionHelper::GenerateManifold(
         shared_from_this(),

@@ -7,7 +7,7 @@
 
 #include "linalg.h"
 
-Manifold CollisionHelper::GenerateManifold(std::shared_ptr<const OBB> _a, std::shared_ptr<const Circle> _b)
+Manifold CollisionHelper::GenerateManifold(const std::shared_ptr<const OBB>& _a, const std::shared_ptr<const Circle>& _b)
 {
 	// do inverse rotation to treat the OBB as AABB
 	float2x2 rotationMatrix = getRotationMatrix(_a->m_body->GetOrientation());

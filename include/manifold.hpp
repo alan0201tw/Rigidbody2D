@@ -17,8 +17,8 @@ public:
 public:
 
     Manifold(
-        std::shared_ptr<RigidBody2D> _body0, 
-        std::shared_ptr<RigidBody2D> _body1,
+        const std::shared_ptr<RigidBody2D>& _body0, 
+        const std::shared_ptr<RigidBody2D>& _body1,
         int _contactPointCount,
         std::array<float2, 2> _contactPoints,
         float2 _normal,

@@ -58,7 +58,7 @@ void Scene::Solve()
 void Scene::Integrate()
 {
 	// integrate
-	m_integrator->Integrate(shared_from_this());
+	m_integrator->Integrate(*this);
 }
 
 void Scene::Render() const
@@ -131,7 +131,7 @@ void Scene::Render() const
     m_manifolds.clear();
 }
 
-std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, float2 _position)
+std::shared_ptr<RigidBody2D> Scene::AddRigidBody(const std::shared_ptr<Shape>& _shape, float2 _position)
 {
     if(_shape->m_body != nullptr)
     {
@@ -149,7 +149,7 @@ std::shared_ptr<RigidBody2D> Scene::AddRigidBody(std::shared_ptr<Shape> _shape, 
     return body;
 }
 
-void Scene::AddJoint(std::shared_ptr<Joint> _joint)
+void Scene::AddJoint(const std::shared_ptr<Joint>& _joint)
 {
     m_joints.push_back(_joint);
 }

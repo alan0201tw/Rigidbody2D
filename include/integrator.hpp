@@ -13,25 +13,25 @@ protected:
     typedef std::shared_ptr<RigidBody2D> BodyRef;
 
 public:
-	virtual void Integrate(std::shared_ptr<Scene> scene) = 0;
+	virtual void Integrate(Scene& scene) = 0;
 };
 
 class ExplicitEulerIntegrator : public Integrator
 {
 public:
-    virtual void Integrate(std::shared_ptr<Scene> scene) override;
+    virtual void Integrate(Scene& scene) override;
 };
 
 class SymplecticEulerIntegrator : public Integrator
 {
 public:
-	virtual void Integrate(std::shared_ptr<Scene> scene) override;
+	virtual void Integrate(Scene& scene) override;
 };
 
 class NewtonIntegrator : public Integrator
 {
 public:
-    virtual void Integrate(std::shared_ptr<Scene> scene) override;
+    virtual void Integrate(Scene& scene) override;
 };
 
 class RungeKuttaFourthIntegrator : public Integrator
@@ -47,5 +47,5 @@ private:
     };
 
 public:
-    virtual void Integrate(std::shared_ptr<Scene> scene) override;
+    virtual void Integrate(Scene& scene) override;
 };

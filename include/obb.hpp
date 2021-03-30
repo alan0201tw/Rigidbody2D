@@ -28,10 +28,10 @@ private:
 public:
     OBB(float2 _extent) : m_extent(_extent) {}
 
-    virtual Manifold accept(std::shared_ptr<const ShapeVisitor<Manifold>> visitor) const override;
+    virtual Manifold accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visitor) const override;
 
-    virtual Manifold visitAABB(std::shared_ptr<const OBB> _shape) const override;
-    virtual Manifold visitCircle(std::shared_ptr<const Circle> _shape) const override;
+    virtual Manifold visitAABB(const std::shared_ptr<const OBB>& _shape) const override;
+    virtual Manifold visitCircle(const std::shared_ptr<const Circle>& _shape) const override;
 
     virtual void Render() const override;
 
