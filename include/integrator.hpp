@@ -10,7 +10,6 @@ class Integrator
 {
 protected:
     typedef linalg::aliases::float2 float2;
-    typedef std::shared_ptr<RigidBody2D> BodyRef;
 
 public:
 	virtual void Integrate(Scene& scene) = 0;

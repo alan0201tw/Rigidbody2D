@@ -34,9 +34,9 @@ OBB::float2 OBB::GetSupportPoint(const float2& dir) const
     return bestVertex;
 }
 
-Manifold OBB::accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visitor) const
+Manifold OBB::accept(const ShapeVisitor<Manifold>& visitor) const
 {
-    return visitor->visitAABB(shared_from_this());
+    return visitor.visitAABB(*this);
 }
 
 //////////////
@@ -185,43 +185,43 @@ size_t OBB::Clip(float2 normal, float clipped, std::array<float2, 2> face)
 
 //////////////
 
-Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
+Manifold OBB::visitAABB(const OBB& _shape) const
 {
-    //return Manifold(m_body, _shape->m_body, 0, {}, float2(0,0), 0, false);
-    Manifold dummyManifold = Manifold(m_body, _shape->m_body, 0, {}, float2(0,0), 0, false);
+    //return Manifold(m_body, _shape.m_body, 0, {}, float2(0,0), 0, false);
+    Manifold dummyManifold = Manifold(m_body, _shape.m_body, 0, {}, float2(0,0), 0, false);
 
     // Check for a separating axis with A's face planes
     size_t faceA = 0u;
     float penetrationA = FindAxisLeastPenetration(
-        faceA, *this, *_shape);
+        faceA, *this, _shape);
     if(penetrationA >= 0.0f)
         return dummyManifold;
 
     // Check for a separating axis with B's face planes
     size_t faceB = 0u;
     float penetrationB = FindAxisLeastPenetration(
-        faceB, *_shape, *this);
+        faceB, _shape, *this);
     if(penetrationB >= 0.0f)
         return dummyManifold;
 
     size_t referenceIndex = 0u;
     bool flip; // Always point from a to b
 
-    std::shared_ptr<const OBB> RefPoly; // Reference
-    std::shared_ptr<const OBB> IncPoly; // Incident
+    const OBB* RefPoly; // Reference
+    const OBB* IncPoly; // Incident
 
     // Determine which shape contains reference face
     if(biasGreaterThan( penetrationA, penetrationB ))
     {
-        RefPoly = shared_from_this();
-        IncPoly = _shape;
+        RefPoly = this;
+        IncPoly = &_shape;
         referenceIndex = faceA;
         flip = false;
     }
     else
     {
-        RefPoly = _shape;
-        IncPoly = shared_from_this();
+        RefPoly = &_shape;
+        IncPoly = this;
         referenceIndex = faceB;
         flip = true;
     }
@@ -306,10 +306,10 @@ Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
     return m;
 }
 
-Manifold OBB::visitCircle(const std::shared_ptr<const Circle>& _shape) const
+Manifold OBB::visitCircle(const Circle& _shape) const
 {
     auto manifold = CollisionHelper::GenerateManifold(
-        shared_from_this(),
+        *this,
         _shape
     );
 

@@ -8,12 +8,12 @@
 
 #include <cmath>
 
-Manifold Circle::accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visitor) const
+Manifold Circle::accept(const ShapeVisitor<Manifold>& visitor) const
 {
-    return visitor->visitCircle(shared_from_this());
+    return visitor.visitCircle(*this);
 }
 
-Manifold Circle::visitAABB(const std::shared_ptr<const OBB>& _shape) const
+Manifold Circle::visitAABB(const OBB& _shape) const
 {
     // in impulse engine, the normal is flipped ( * -1 )
     // because in that architecture, the body0 and body1 is already
@@ -25,18 +25,18 @@ Manifold Circle::visitAABB(const std::shared_ptr<const OBB>& _shape) const
 
     auto manifold = CollisionHelper::GenerateManifold(
         _shape,
-        shared_from_this()
+        *this
     );
 
     return manifold;
 }
 
-Manifold Circle::visitCircle(const std::shared_ptr<const Circle>& _shape) const
+Manifold Circle::visitCircle(const Circle& _shape) const
 {
     bool isHit = true;
-    float2 normal = _shape->m_body->GetPosition() - m_body->GetPosition();
+    float2 normal = _shape.m_body->GetPosition() - m_body->GetPosition();
 
-    float radius_sum = m_radius + _shape->m_radius;
+    float radius_sum = m_radius + _shape.m_radius;
     float radius_sum_sqr = radius_sum * radius_sum;
 
     // length2 returns length square
@@ -63,7 +63,7 @@ Manifold Circle::visitCircle(const std::shared_ptr<const Circle>& _shape) const
 
     return Manifold(
         m_body,
-        _shape->m_body,
+        _shape.m_body,
         (isHit == true) ? 1 : 0,
 		{ contactPoint },
         normal,

@@ -1,7 +1,7 @@
 # Compile Info
 CC := g++
 SRCEXT := cpp
-CFLAGS := -O2 -std=c++17 -pthread -g -Wall
+CFLAGS := -O3 -std=c++17 -pthread -g -Wall
 INCDIR := -I include
 LINKS= -lglut -lGL -lGLU
 

@@ -215,8 +215,6 @@ int main(int argc, char* argv[])
         {
             std::shared_ptr<SpringJoint> disJoint = 
                 std::make_shared<SpringJoint>(boxes[i - 1], boxes[i], rest_length, 100.0f);
-            // std::shared_ptr<DistanceJoint> disJoint = 
-            //     std::make_shared<DistanceJoint>(boxes[i - 1], boxes[i]);
             scene->AddJoint(disJoint);
         }
     }

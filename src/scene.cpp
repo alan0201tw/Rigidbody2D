@@ -22,7 +22,7 @@ void Scene::Solve()
 		for (size_t j = i + 1; j < m_bodies.size(); ++j)
 		{
 			Manifold manifold =
-				m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
+				m_bodies[i]->GetShape()->accept(*m_bodies[j]->GetShape());
 
 			// put the manifold into resolve queue only if it's a hit
 			if (manifold.m_isHit == true)
@@ -77,7 +77,7 @@ void Scene::Render() const
         for(size_t j = i + 1; j < m_bodies.size(); ++j)
         {
             Manifold manifold = 
-                m_bodies[i]->GetShape()->accept(m_bodies[j]->GetShape());
+                m_bodies[i]->GetShape()->accept(*m_bodies[j]->GetShape());
 
             if(manifold.m_isHit == true)
                 m_manifolds.push_back(manifold);
