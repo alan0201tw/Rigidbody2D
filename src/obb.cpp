@@ -42,37 +42,38 @@ Manifold OBB::accept(const std::shared_ptr<const ShapeVisitor<Manifold>>& visito
 //////////////
 
 float OBB::FindAxisLeastPenetration(
-    std::shared_ptr<size_t> faceIndexPtr, std::shared_ptr<const OBB> A, 
-    std::shared_ptr<const OBB> B)
+    size_t& faceIndexPtr, 
+    const OBB& A, 
+    const OBB& B)
 {
     float bestDistance = -1e9f;
     size_t bestIndex = 0u;
 
-    std::array<float2, 4> vertices = A->GetLocalSpaceVertices();
-    std::array<float2, 4> normals = A->GetLocalSpaceNormals();
+    std::array<float2, 4> vertices = A.GetLocalSpaceVertices();
+    std::array<float2, 4> normals = A.GetLocalSpaceNormals();
 
-    float2x2 rotMatrixOfA = getRotationMatrix(A->m_body->GetOrientation());
-    float2x2 rotMatrixOfB = getRotationMatrix(B->m_body->GetOrientation());
+    float2x2 rotMatrixOfA = getRotationMatrix(A.m_body->GetOrientation());
+    float2x2 rotMatrixOfB = getRotationMatrix(B.m_body->GetOrientation());
 
-    for(size_t i = 0; i < A->GetVertexCount(); ++i)
+    for(size_t i = 0; i < A.GetVertexCount(); ++i)
     {
         // Retrieve a face normal from A
         float2 n = normals[i];
         float2 nw = linalg::mul(rotMatrixOfA, n);
 
         // Transform face normal into B's model space
-        // Mat2 buT = B->u.Transpose( );
+        // Mat2 buT = B.u.Transpose( );
         float2x2 invRotMatrixOfB = linalg::transpose(rotMatrixOfB);
         n = linalg::mul(invRotMatrixOfB, nw);
 
         // Retrieve support point from B along -n
-        float2 s = B->GetSupportPoint( -n );
+        float2 s = B.GetSupportPoint( -n );
 
         // Retrieve vertex on face from A, transform into
         // B's model space
         float2 v = vertices[i];
-        v = linalg::mul(rotMatrixOfA, v) + A->m_body->GetPosition();
-        v -= B->m_body->GetPosition();
+        v = linalg::mul(rotMatrixOfA, v) + A.m_body->GetPosition();
+        v -= B.m_body->GetPosition();
         v = linalg::mul(invRotMatrixOfB, v);
 
         // Compute penetration distance (in B's model space)
@@ -86,27 +87,28 @@ float OBB::FindAxisLeastPenetration(
         }
     }
     
-    *faceIndexPtr = bestIndex;
+    faceIndexPtr = bestIndex;
     return bestDistance;
 }
 
 std::array<float2, 2> OBB::FindIncidentFace( 
-    std::shared_ptr<const OBB> RefPoly, std::shared_ptr<const OBB> IncPoly, 
+    const OBB& RefPoly, 
+    const OBB& IncPoly, 
     size_t referenceIndex)
 {
-    // const std::array<float2, 4> refVertices = RefPoly->GetLocalSpaceVertices();
-    const std::array<float2, 4> refNormals = RefPoly->GetLocalSpaceNormals();
-    const std::array<float2, 4> incVertices = IncPoly->GetLocalSpaceVertices();
-    const std::array<float2, 4> incNormals = IncPoly->GetLocalSpaceNormals();
+    // const std::array<float2, 4> refVertices = RefPoly.GetLocalSpaceVertices();
+    const std::array<float2, 4> refNormals = RefPoly.GetLocalSpaceNormals();
+    const std::array<float2, 4> incVertices = IncPoly.GetLocalSpaceVertices();
+    const std::array<float2, 4> incNormals = IncPoly.GetLocalSpaceNormals();
 
     float2 referenceNormal = refNormals[referenceIndex];
 
     const float2x2 rotMatrixOfRef = 
-        getRotationMatrix(RefPoly->m_body->GetOrientation());
+        getRotationMatrix(RefPoly.m_body->GetOrientation());
     const float2x2 rotMatrixOfInc = 
-        getRotationMatrix(IncPoly->m_body->GetOrientation());
+        getRotationMatrix(IncPoly.m_body->GetOrientation());
     const float2x2 invRotMatrixOfInc = 
-        linalg::transpose(getRotationMatrix(IncPoly->m_body->GetOrientation()));
+        linalg::transpose(getRotationMatrix(IncPoly.m_body->GetOrientation()));
 
     // Calculate normal in incident's frame of reference
     referenceNormal = linalg::mul(rotMatrixOfRef, referenceNormal); // To world space
@@ -115,7 +117,7 @@ std::array<float2, 2> OBB::FindIncidentFace(
     // Find most anti-normal face on incident polygon
 	size_t incidentFace = 0u;
     float minDot = 1e9f;
-    for(size_t i = 0; i < IncPoly->GetVertexCount(); ++i)
+    for(size_t i = 0; i < IncPoly.GetVertexCount(); ++i)
     {
         float dot = linalg::dot(referenceNormal, incNormals[i]);
         if(dot < minDot)
@@ -129,15 +131,15 @@ std::array<float2, 2> OBB::FindIncidentFace(
     // Assign face vertices for incidentFace
     vertexPosArray[0] = 
         linalg::mul(rotMatrixOfInc, incVertices[incidentFace])
-         + IncPoly->m_body->GetPosition();
+         + IncPoly.m_body->GetPosition();
 
     incidentFace = 
-        incidentFace + 1 >= IncPoly->GetVertexCount() ? 
+        incidentFace + 1 >= IncPoly.GetVertexCount() ? 
         0 : incidentFace + 1;
 
     vertexPosArray[1] = 
         linalg::mul(rotMatrixOfInc, incVertices[incidentFace])
-         + IncPoly->m_body->GetPosition();
+         + IncPoly.m_body->GetPosition();
 
     return vertexPosArray;
 }
@@ -189,20 +191,20 @@ Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
     Manifold dummyManifold = Manifold(m_body, _shape->m_body, 0, {}, float2(0,0), 0, false);
 
     // Check for a separating axis with A's face planes
-    std::shared_ptr<size_t> faceA = std::make_shared<size_t>(0u);
+    size_t faceA = 0u;
     float penetrationA = FindAxisLeastPenetration(
-        faceA, shared_from_this(), _shape);
+        faceA, *this, *_shape);
     if(penetrationA >= 0.0f)
         return dummyManifold;
 
     // Check for a separating axis with B's face planes
-    std::shared_ptr<size_t> faceB = std::make_shared<size_t>(0u);;
+    size_t faceB = 0u;
     float penetrationB = FindAxisLeastPenetration(
-        faceB, _shape, shared_from_this());
+        faceB, *_shape, *this);
     if(penetrationB >= 0.0f)
         return dummyManifold;
 
-    std::shared_ptr<size_t> referenceIndex = std::make_shared<size_t>(0u);;
+    size_t referenceIndex = 0u;
     bool flip; // Always point from a to b
 
     std::shared_ptr<const OBB> RefPoly; // Reference
@@ -227,7 +229,7 @@ Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
     // World space incident face
     // float2 incidentFace[2];
     std::array<float2, 2> incidentFace = 
-        FindIncidentFace( RefPoly, IncPoly, *referenceIndex );
+        FindIncidentFace( *RefPoly, *IncPoly, referenceIndex );
 
     const std::array<float2, 4> refVertices = RefPoly->GetLocalSpaceVertices();
     
@@ -235,11 +237,11 @@ Manifold OBB::visitAABB(const std::shared_ptr<const OBB>& _shape) const
         getRotationMatrix(RefPoly->m_body->GetOrientation());
 
     // Setup reference face vertices
-    float2 v1 = refVertices[*referenceIndex];
-    *referenceIndex = 
-        (*referenceIndex + 1 == RefPoly->GetVertexCount()) 
-        ? 0 : *referenceIndex + 1;
-    float2 v2 = refVertices[*referenceIndex];
+    float2 v1 = refVertices[referenceIndex];
+    referenceIndex = 
+        (referenceIndex + 1 == RefPoly->GetVertexCount()) 
+        ? 0 : referenceIndex + 1;
+    float2 v2 = refVertices[referenceIndex];
 
     // Transform vertices to world space
     v1 = 

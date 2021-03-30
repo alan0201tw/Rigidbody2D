@@ -44,7 +44,6 @@ public:
 		, m_shape(std::move(_shape))
 	{}
 
-
     inline std::shared_ptr<Shape> GetShape() const { return m_shape; }
     inline float2 GetPosition() const { return m_position; }
     inline float2 GetVelocity() const { return m_velocity; }

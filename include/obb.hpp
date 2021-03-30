@@ -18,10 +18,14 @@ private:
     // helper functions for helping collision detection and manifold generation
 
     static float FindAxisLeastPenetration(
-        std::shared_ptr<size_t> faceIndexPtr, std::shared_ptr<const OBB> A, std::shared_ptr<const OBB> B);
+        size_t& faceIndexPtr, 
+        const OBB& A, 
+        const OBB& B);
     
     static std::array<float2, 2> FindIncidentFace( 
-        std::shared_ptr<const OBB> RefPoly, std::shared_ptr<const OBB> IncPoly, size_t referenceIndex);
+        const OBB& RefPoly, 
+        const OBB& IncPoly, 
+        size_t referenceIndex);
 
     static size_t Clip(float2 normal, float clipped, std::array<float2, 2> face);
 
